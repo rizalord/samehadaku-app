@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1040644706351",
+    "firebase_url": "https://samehadaku-1c917.firebaseio.com",
+    "project_id": "samehadaku-1c917",
+    "storage_bucket": "samehadaku-1c917.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1040644706351:android:c482b60e153117380db6da",
+        "android_client_info": {
+          "package_name": "com.example.Samehadaku"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1040644706351-to9brq2j10cjc522vpb10mh1l07ompcb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.Samehadaku",
+            "certificate_hash": "ae7596ecf3ad153e62d3bcd988e6d08cc82ff498"
+          }
+        },
+        {
+          "client_id": "1040644706351-t7is08f027576fehipb6496a23df3kje.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC36hRT2xwsKWjrgIQ2vp18vrJeArYQJ-s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1040644706351-t7is08f027576fehipb6496a23df3kje.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
