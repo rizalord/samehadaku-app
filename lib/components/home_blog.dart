@@ -42,7 +42,11 @@ class Blog extends StatelessWidget {
                     Text(
                       'Season Kedua Anime Go Toubun no Hanayome Ditunda Penayangan',
                       style: GoogleFonts.roboto(
-                          fontSize: 13, color: Colors.black.withOpacity(.77)),
+                        fontSize: 13,
+                        color: Theme.of(context)
+                            .textSelectionColor
+                            .withOpacity(.77),
+                      ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -52,7 +56,9 @@ class Blog extends StatelessWidget {
                       style: GoogleFonts.roboto(
                           fontSize: 13,
                           fontWeight: FontWeight.w300,
-                          color: Colors.black.withOpacity(.71)),
+                          color: Theme.of(context)
+                              .textSelectionColor
+                              .withOpacity(.71)),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -63,7 +69,9 @@ class Blog extends StatelessWidget {
                           fontSize: 13,
                           fontWeight: FontWeight.w300,
                           fontStyle: FontStyle.italic,
-                          color: Colors.black.withOpacity(.71)),
+                          color: Theme.of(context)
+                              .textSelectionColor
+                              .withOpacity(.71)),
                       maxLines: 1,
                       textAlign: TextAlign.left,
                       overflow: TextOverflow.ellipsis,
@@ -85,7 +93,11 @@ class Blog extends StatelessWidget {
                     Text(
                       'Season Kedua Anime Go Toubun no Hanayome Ditunda Penayangan',
                       style: GoogleFonts.roboto(
-                          fontSize: 13, color: Colors.black.withOpacity(.77)),
+                        fontSize: 13,
+                        color: Theme.of(context)
+                            .textSelectionColor
+                            .withOpacity(.77),
+                      ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -95,7 +107,9 @@ class Blog extends StatelessWidget {
                       style: GoogleFonts.roboto(
                           fontSize: 13,
                           fontWeight: FontWeight.w300,
-                          color: Colors.black.withOpacity(.71)),
+                          color: Theme.of(context)
+                              .textSelectionColor
+                              .withOpacity(.71)),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -106,7 +120,9 @@ class Blog extends StatelessWidget {
                           fontSize: 13,
                           fontWeight: FontWeight.w300,
                           fontStyle: FontStyle.italic,
-                          color: Colors.black.withOpacity(.71)),
+                          color: Theme.of(context)
+                              .textSelectionColor
+                              .withOpacity(.71)),
                       maxLines: 1,
                       textAlign: TextAlign.left,
                       overflow: TextOverflow.ellipsis,
@@ -128,7 +144,11 @@ class Blog extends StatelessWidget {
                     Text(
                       'Season Kedua Anime Go Toubun no Hanayome Ditunda Penayangan',
                       style: GoogleFonts.roboto(
-                          fontSize: 13, color: Colors.black.withOpacity(.77)),
+                        fontSize: 13,
+                        color: Theme.of(context)
+                            .textSelectionColor
+                            .withOpacity(.77),
+                      ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -138,7 +158,9 @@ class Blog extends StatelessWidget {
                       style: GoogleFonts.roboto(
                           fontSize: 13,
                           fontWeight: FontWeight.w300,
-                          color: Colors.black.withOpacity(.71)),
+                          color: Theme.of(context)
+                              .textSelectionColor
+                              .withOpacity(.71)),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -149,7 +171,9 @@ class Blog extends StatelessWidget {
                           fontSize: 13,
                           fontWeight: FontWeight.w300,
                           fontStyle: FontStyle.italic,
-                          color: Colors.black.withOpacity(.71)),
+                          color: Theme.of(context)
+                              .textSelectionColor
+                              .withOpacity(.71)),
                       maxLines: 1,
                       textAlign: TextAlign.left,
                       overflow: TextOverflow.ellipsis,
@@ -171,7 +195,11 @@ class Blog extends StatelessWidget {
                     Text(
                       'Season Kedua Anime Go Toubun no Hanayome Ditunda Penayangan',
                       style: GoogleFonts.roboto(
-                          fontSize: 13, color: Colors.black.withOpacity(.77)),
+                        fontSize: 13,
+                        color: Theme.of(context)
+                            .textSelectionColor
+                            .withOpacity(.77),
+                      ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -181,7 +209,9 @@ class Blog extends StatelessWidget {
                       style: GoogleFonts.roboto(
                           fontSize: 13,
                           fontWeight: FontWeight.w300,
-                          color: Colors.black.withOpacity(.71)),
+                          color: Theme.of(context)
+                              .textSelectionColor
+                              .withOpacity(.71)),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -192,7 +222,9 @@ class Blog extends StatelessWidget {
                           fontSize: 13,
                           fontWeight: FontWeight.w300,
                           fontStyle: FontStyle.italic,
-                          color: Colors.black.withOpacity(.71)),
+                          color: Theme.of(context)
+                              .textSelectionColor
+                              .withOpacity(.71)),
                       maxLines: 1,
                       textAlign: TextAlign.left,
                       overflow: TextOverflow.ellipsis,

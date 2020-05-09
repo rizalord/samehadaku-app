@@ -50,59 +50,59 @@ class _MyAppState extends State<MyApp> {
       themeMode: ThemeMode.light,
       // DARK THEME
       darkTheme: ThemeData(
-        brightness: Brightness.dark,
-        unselectedWidgetColor:
-            Colors.white.withOpacity(.72) // Icon Header Color [Home]
-        ,
-        tabBarTheme: TabBarTheme(
-          unselectedLabelColor: Colors.white,
-          labelColor: Colors.lightBlue,
-        ),
-        sliderTheme: SliderThemeData(
-          disabledActiveTrackColor: Color(0xFFC4C4C4),
-          activeTrackColor: Color(0xFF4CC6E1),
-        ),
-        textTheme: TextTheme(
-          headline1: GoogleFonts.poppins(
-            fontSize: 18,
-            color: Colors.white,
-            fontWeight: FontWeight.w500,
+          brightness: Brightness.dark,
+          unselectedWidgetColor:
+              Colors.white.withOpacity(.72) // Icon Header Color [Home]
+          ,
+          tabBarTheme: TabBarTheme(
+            unselectedLabelColor: Colors.white,
+            labelColor: Colors.lightBlue,
           ),
-          headline2: GoogleFonts.poppins(
-            fontWeight: FontWeight.w300,
-            fontSize: 13,
-            color: Colors.white.withOpacity(.61),
+          sliderTheme: SliderThemeData(
+            disabledActiveTrackColor: Color(0xFFC4C4C4),
+            activeTrackColor: Color(0xFF4CC6E1),
           ),
-        ),
-        dividerColor: Colors.white.withOpacity(.08),
-      ),
+          textTheme: TextTheme(
+            headline1: GoogleFonts.poppins(
+              fontSize: 18,
+              color: Colors.white,
+              fontWeight: FontWeight.w500,
+            ),
+            headline2: GoogleFonts.poppins(
+              fontWeight: FontWeight.w300,
+              fontSize: 13,
+              color: Colors.white.withOpacity(.61),
+            ),
+          ),
+          dividerColor: Colors.white.withOpacity(.08),
+          textSelectionColor: Colors.white),
       // LIGHT THEME
       theme: ThemeData(
-        scaffoldBackgroundColor: Color(0xFFFCFCFC),
-        brightness: Brightness.light,
-        unselectedWidgetColor:
-            Colors.black.withOpacity(.52), // Icon Header Color [Home]
-        sliderTheme: SliderThemeData(
-            disabledActiveTrackColor: Color(0xFFC4C4C4),
-            activeTrackColor: Color(0xFF4CC6E1)),
-        tabBarTheme: TabBarTheme(
-          labelColor: Colors.white,
-          unselectedLabelColor: Colors.lightBlue,
-        ),
-        textTheme: TextTheme(
-          headline1: GoogleFonts.poppins(
-            fontSize: 18,
-            color: Colors.lightBlue,
-            fontWeight: FontWeight.w500,
+          scaffoldBackgroundColor: Color(0xFFFCFCFC),
+          brightness: Brightness.light,
+          unselectedWidgetColor:
+              Colors.black.withOpacity(.52), // Icon Header Color [Home]
+          sliderTheme: SliderThemeData(
+              disabledActiveTrackColor: Color(0xFFC4C4C4),
+              activeTrackColor: Color(0xFF4CC6E1)),
+          tabBarTheme: TabBarTheme(
+            labelColor: Colors.white,
+            unselectedLabelColor: Colors.lightBlue,
           ),
-          headline2: GoogleFonts.poppins(
-            fontWeight: FontWeight.w300,
-            fontSize: 13,
-            color: Colors.black.withOpacity(.61),
+          textTheme: TextTheme(
+            headline1: GoogleFonts.poppins(
+              fontSize: 18,
+              color: Colors.lightBlue,
+              fontWeight: FontWeight.w500,
+            ),
+            headline2: GoogleFonts.poppins(
+              fontWeight: FontWeight.w300,
+              fontSize: 13,
+              color: Colors.black.withOpacity(.61),
+            ),
           ),
-        ),
-        dividerColor: Colors.black.withOpacity(.08),
-      ),
+          dividerColor: Colors.black.withOpacity(.08),
+          textSelectionColor: Colors.black),
       home: SplashScreenPage(),
     );
   }

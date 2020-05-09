@@ -81,7 +81,7 @@ class EpsCard extends StatelessWidget {
                     style: GoogleFonts.roboto(
                       fontWeight: FontWeight.w400,
                       fontSize: 16,
-                      color: Colors.black,
+                      color: Theme.of(context).textSelectionColor,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -93,7 +93,7 @@ class EpsCard extends StatelessWidget {
                       style: GoogleFonts.roboto(
                         fontWeight: FontWeight.w300,
                         fontSize: 12,
-                        color: Colors.black.withOpacity(.8),
+                        color: Theme.of(context).textSelectionColor.withOpacity(.8),
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -108,7 +108,7 @@ class EpsCard extends StatelessWidget {
                           style: GoogleFonts.roboto(
                             fontWeight: FontWeight.w300,
                             fontSize: 12,
-                            color: Colors.black.withOpacity(1),
+                            color: Theme.of(context).textSelectionColor.withOpacity(1),
                           ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -118,7 +118,7 @@ class EpsCard extends StatelessWidget {
                           style: GoogleFonts.roboto(
                             fontWeight: FontWeight.w300,
                             fontSize: 12,
-                            color: Colors.black.withOpacity(.8),
+                            color: Theme.of(context).textSelectionColor.withOpacity(.8),
                           ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -135,7 +135,7 @@ class EpsCard extends StatelessWidget {
                           style: GoogleFonts.roboto(
                             fontWeight: FontWeight.w300,
                             fontSize: 12,
-                            color: Colors.black.withOpacity(1),
+                            color: Theme.of(context).textSelectionColor.withOpacity(1),
                           ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -145,7 +145,7 @@ class EpsCard extends StatelessWidget {
                           style: GoogleFonts.roboto(
                             fontWeight: FontWeight.w300,
                             fontSize: 12,
-                            color: Colors.black.withOpacity(.8),
+                            color: Theme.of(context).textSelectionColor.withOpacity(.8),
                           ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
