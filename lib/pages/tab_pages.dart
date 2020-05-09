@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import './../general/home.dart';
 import './../general/season.dart';
 import './../general/date_release.dart';
+import './../general/notification_page.dart';
 
 class TabPages extends StatefulWidget {
   final Function changePage;
@@ -27,7 +28,7 @@ class _TabPagesState extends State<TabPages> {
       Home(changePage: widget.changePage),
       Season(),
       DateRelease(),
-      Text('4'),
+      NotificationPage(),
       Text('5'),
     ];
     _pageController = PageController(initialPage: index);

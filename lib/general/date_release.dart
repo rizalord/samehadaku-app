@@ -103,6 +103,7 @@ class SingleItemsWrap extends StatelessWidget {
             'Hachi-nan tte, Sore wa naidesu',
             style: GoogleFonts.roboto(
               fontSize: 16,
+              color: Colors.black,
             ),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,

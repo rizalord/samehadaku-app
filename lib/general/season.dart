@@ -68,7 +68,7 @@ class GridSingleItem extends StatelessWidget {
             'Ongoing',
             style: GoogleFonts.roboto(
               fontSize: 15,
-              color: Colors.black.withOpacity(.46),
+              color: Theme.of(context).textSelectionColor.withOpacity(.46),
             ),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
