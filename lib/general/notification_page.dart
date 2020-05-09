@@ -156,7 +156,7 @@ class ImageItem extends StatelessWidget {
     return Container(
       height: 84,
       width: width * .33,
-      color: Colors.red,
+      color: Colors.grey,
       child: Image.network(
         'https://i0.wp.com/samehadaku.vip/wp-content/uploads/2020/05/Bungo-to-alchemist-3.jpg?quality=80&resize=270,166',
         fit: BoxFit.cover,

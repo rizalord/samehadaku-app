@@ -4,6 +4,7 @@ import './../general/home.dart';
 import './../general/season.dart';
 import './../general/date_release.dart';
 import './../general/notification_page.dart';
+import './../general/download_page.dart';
 
 class TabPages extends StatefulWidget {
   final Function changePage;
@@ -29,7 +30,7 @@ class _TabPagesState extends State<TabPages> {
       Season(),
       DateRelease(),
       NotificationPage(),
-      Text('5'),
+      DownloadPage(),
     ];
     _pageController = PageController(initialPage: index);
   }

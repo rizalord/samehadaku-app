@@ -47,62 +47,66 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      themeMode: ThemeMode.light,
+      themeMode: ThemeMode.dark,
       // DARK THEME
       darkTheme: ThemeData(
-          brightness: Brightness.dark,
-          unselectedWidgetColor:
-              Colors.white.withOpacity(.72) // Icon Header Color [Home]
-          ,
-          tabBarTheme: TabBarTheme(
-            unselectedLabelColor: Colors.white,
-            labelColor: Colors.lightBlue,
+        brightness: Brightness.dark,
+        unselectedWidgetColor:
+            Colors.white.withOpacity(.72) // Icon Header Color [Home]
+        ,
+        tabBarTheme: TabBarTheme(
+          unselectedLabelColor: Colors.white,
+          labelColor: Colors.lightBlue,
+        ),
+        sliderTheme: SliderThemeData(
+          disabledActiveTrackColor: Color(0xFFC4C4C4),
+          activeTrackColor: Color(0xFF4CC6E1),
+        ),
+        textTheme: TextTheme(
+          headline1: GoogleFonts.poppins(
+            fontSize: 18,
+            color: Colors.white,
+            fontWeight: FontWeight.w500,
           ),
-          sliderTheme: SliderThemeData(
-            disabledActiveTrackColor: Color(0xFFC4C4C4),
-            activeTrackColor: Color(0xFF4CC6E1),
+          headline2: GoogleFonts.poppins(
+            fontWeight: FontWeight.w300,
+            fontSize: 13,
+            color: Colors.white.withOpacity(.61),
           ),
-          textTheme: TextTheme(
-            headline1: GoogleFonts.poppins(
-              fontSize: 18,
-              color: Colors.white,
-              fontWeight: FontWeight.w500,
-            ),
-            headline2: GoogleFonts.poppins(
-              fontWeight: FontWeight.w300,
-              fontSize: 13,
-              color: Colors.white.withOpacity(.61),
-            ),
-          ),
-          dividerColor: Colors.white.withOpacity(.08),
-          textSelectionColor: Colors.white),
+        ),
+        dividerColor: Colors.white.withOpacity(.08),
+        textSelectionColor: Colors.white,
+        textSelectionHandleColor: Colors.white.withOpacity(.6),
+      ),
       // LIGHT THEME
       theme: ThemeData(
-          scaffoldBackgroundColor: Color(0xFFFCFCFC),
-          brightness: Brightness.light,
-          unselectedWidgetColor:
-              Colors.black.withOpacity(.52), // Icon Header Color [Home]
-          sliderTheme: SliderThemeData(
-              disabledActiveTrackColor: Color(0xFFC4C4C4),
-              activeTrackColor: Color(0xFF4CC6E1)),
-          tabBarTheme: TabBarTheme(
-            labelColor: Colors.white,
-            unselectedLabelColor: Colors.lightBlue,
+        scaffoldBackgroundColor: Color(0xFFFCFCFC),
+        brightness: Brightness.light,
+        unselectedWidgetColor:
+            Colors.black.withOpacity(.52), // Icon Header Color [Home]
+        sliderTheme: SliderThemeData(
+            disabledActiveTrackColor: Color(0xFFC4C4C4),
+            activeTrackColor: Color(0xFF4CC6E1)),
+        tabBarTheme: TabBarTheme(
+          labelColor: Colors.white,
+          unselectedLabelColor: Colors.lightBlue,
+        ),
+        textTheme: TextTheme(
+          headline1: GoogleFonts.poppins(
+            fontSize: 18,
+            color: Colors.lightBlue,
+            fontWeight: FontWeight.w500,
           ),
-          textTheme: TextTheme(
-            headline1: GoogleFonts.poppins(
-              fontSize: 18,
-              color: Colors.lightBlue,
-              fontWeight: FontWeight.w500,
-            ),
-            headline2: GoogleFonts.poppins(
-              fontWeight: FontWeight.w300,
-              fontSize: 13,
-              color: Colors.black.withOpacity(.61),
-            ),
+          headline2: GoogleFonts.poppins(
+            fontWeight: FontWeight.w300,
+            fontSize: 13,
+            color: Colors.black.withOpacity(.61),
           ),
-          dividerColor: Colors.black.withOpacity(.08),
-          textSelectionColor: Colors.black),
+        ),
+        dividerColor: Colors.black.withOpacity(.08),
+        textSelectionColor: Colors.black,
+        textSelectionHandleColor: Colors.lightBlue.withOpacity(.5),
+      ),
       home: SplashScreenPage(),
     );
   }
