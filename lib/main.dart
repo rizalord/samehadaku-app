@@ -47,7 +47,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      themeMode: ThemeMode.dark,
+      themeMode: ThemeMode.light,
       // DARK THEME
       darkTheme: ThemeData(
         brightness: Brightness.dark,
@@ -77,7 +77,9 @@ class _MyAppState extends State<MyApp> {
         dividerColor: Colors.white.withOpacity(.08),
         textSelectionColor: Colors.white,
         textSelectionHandleColor: Colors.white.withOpacity(.6),
+        canvasColor: Colors.black,
       ),
+
       // LIGHT THEME
       theme: ThemeData(
         scaffoldBackgroundColor: Color(0xFFFCFCFC),
@@ -106,6 +108,7 @@ class _MyAppState extends State<MyApp> {
         dividerColor: Colors.black.withOpacity(.08),
         textSelectionColor: Colors.black,
         textSelectionHandleColor: Colors.lightBlue.withOpacity(.5),
+        canvasColor: Colors.white,
       ),
       home: SplashScreenPage(),
     );

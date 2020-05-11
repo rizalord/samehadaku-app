@@ -1,3 +1,4 @@
+import 'package:Samehadaku/pages/search_page.dart';
 import 'package:flutter/material.dart';
 import './tab_pages.dart';
 
@@ -21,7 +22,7 @@ class GeneralMainState extends State<GeneralMain> {
     if (page != 0) {
       page = 0;
       _pageController.animateToPage(0,
-          duration: Duration(milliseconds: 500), curve: Curves.easeIn);
+          duration: Duration(milliseconds: 400), curve: Curves.fastOutSlowIn);
       return false;
     } else {
       return true;
@@ -38,7 +39,7 @@ class GeneralMainState extends State<GeneralMain> {
           controller: _pageController,
           children: <Widget>[
             TabPages(changePage: changePage),
-            Text('nice'),
+            SearchPage(),
           ],
         ),
       ),
