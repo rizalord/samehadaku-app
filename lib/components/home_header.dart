@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:page_transition/page_transition.dart';
+import './../pages/home_notification.dart';
 
 class Header extends StatelessWidget {
   final Function changePage;
@@ -48,7 +50,18 @@ class Header extends StatelessWidget {
                   child: Center(
                     child: IconButton(
                         icon: Icon(Icons.notifications_none),
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            PageTransition(
+                              // curve: Curves.fastOutSlowIn,
+                              // duration: Duration(milliseconds: 300),
+                              type: PageTransitionType.fade,
+                              alignment: Alignment.bottomCenter,
+                              child: NotifHome(),
+                            ),
+                          );
+                        },
                         iconSize: 30,
                         alignment: Alignment.center,
                         color: Theme.of(context).unselectedWidgetColor),

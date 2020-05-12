@@ -13,27 +13,111 @@ class SearchPage extends StatelessWidget {
         backgroundColor: Theme.of(context).canvasColor,
         body: SafeArea(
           child: Container(
-            padding: EdgeInsets.only(left: 16, right: 16, top: 8),
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  SearchBar(width: width, formKey: _formKey),
-                  Flexible(
-                    fit: FlexFit.loose,
-                    child: ListView.builder(
-                      physics: NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      scrollDirection: Axis.vertical,
-                      itemCount: 5,
-                      itemBuilder: (ctx, idx) => ListItem(width: width),
-                    ),
-                  )
-                ],
-              ),
+            padding: EdgeInsets.only(left: 0, right: 0, top: 0),
+            child: Stack(
+              children: <Widget>[
+                // IF STARTER
+                ListStarter(width: width, height: height),
+
+                // IF DATA NOT EMPTY
+                // ListFilled(width: width),
+
+                // IF DATA EMPTY
+                // ListEmpty(width: width),
+
+                // SEARCHBAR [DONT REMOVE OR EDIT]
+                SearchBar(width: width, formKey: _formKey),
+              ],
             ),
           ),
         ));
+  }
+}
+
+class ListStarter extends StatelessWidget {
+  const ListStarter({
+    Key key,
+    @required this.width,
+    @required this.height,
+  }) : super(key: key);
+
+  final double width;
+  final double height;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: width,
+      height: height,
+      alignment: Alignment.center,
+      child: Image.asset(
+        'assets/images/lime-searching.png',
+        // fit: BoxFit.cover,
+        alignment: Alignment.center,
+        scale: 2,
+      ),
+    );
+  }
+}
+
+class ListEmpty extends StatelessWidget {
+  const ListEmpty({
+    Key key,
+    @required this.width,
+  }) : super(key: key);
+
+  final double width;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.only(top: 109),
+      padding: EdgeInsets.only(left: 30, right: 30),
+      width: width,
+      height: 50,
+      child: Text(
+        'Hasil tidak ditemukan, silahkan gunakan kata kunci lain',
+        style: GoogleFonts.poppins(
+          fontSize: 14,
+          color: Theme.of(context).textSelectionColor.withOpacity(.89),
+        ),
+        textAlign: TextAlign.center,
+      ),
+    );
+  }
+}
+
+class ListFilled extends StatelessWidget {
+  const ListFilled({
+    Key key,
+    @required this.width,
+  }) : super(key: key);
+
+  final double width;
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          // SearchBar(width: width, formKey: _formKey),
+          Flexible(
+            fit: FlexFit.loose,
+            child: Container(
+              margin: EdgeInsets.only(left: 16, right: 16, top: 79),
+              child: ListView.builder(
+                physics: NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                scrollDirection: Axis.vertical,
+                itemCount: 5,
+                itemBuilder: (ctx, idx) => ListItem(width: width),
+              ),
+            ),
+          )
+        ],
+      ),
+    );
   }
 }
 
@@ -194,6 +278,8 @@ class SearchBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: 79,
+      padding: EdgeInsets.only(left: 16, right: 16, top: 8),
+      color: Theme.of(context).scaffoldBackgroundColor,
       width: width,
       child: Form(
         key: _formKey,
