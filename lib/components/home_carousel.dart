@@ -3,7 +3,10 @@ import 'dart:ui';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:page_transition/page_transition.dart';
+import 'package:touchable_opacity/touchable_opacity.dart';
 import './mini_component/dots.dart';
+import './../pages/detail_episode.dart';
 
 class Carousel extends StatefulWidget {
   @override
@@ -41,7 +44,21 @@ class _CarouselState extends State<Carousel> {
               items: [1, 2, 3, 4, 5].map((i) {
                 return Builder(
                   builder: (BuildContext context) {
-                    return CarouselSingle();
+                    return TouchableOpacity(
+                      activeOpacity: .9,
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          PageTransition(
+                            // curve: Curves.fastOutSlowIn,
+                            // duration: Duration(milliseconds: 300),
+                            type: PageTransitionType.fade,
+                            child: DetailEpisode(),
+                          ),
+                        );
+                      },
+                      child: CarouselSingle(),
+                    );
                   },
                 );
               }).toList(),
@@ -132,8 +149,7 @@ class CarouselSingle extends StatelessWidget {
         width: MediaQuery.of(context).size.width,
         margin: EdgeInsets.symmetric(horizontal: 12.0),
         decoration: BoxDecoration(
-            color: Colors.grey,
-            borderRadius: BorderRadius.circular(15)),
+            color: Colors.grey, borderRadius: BorderRadius.circular(15)),
         child: Stack(
           children: <Widget>[
             ClipRRect(
@@ -147,8 +163,7 @@ class CarouselSingle extends StatelessWidget {
                   ),
                 ),
                 child: BackdropFilter(
-                  filter: ImageFilter.blur(
-                      sigmaX: 4.0, sigmaY: 4.0),
+                  filter: ImageFilter.blur(sigmaX: 4.0, sigmaY: 4.0),
                   child: Container(
                     color: Colors.black.withOpacity(.37),
                   ),
@@ -170,12 +185,9 @@ class CarouselSingle extends StatelessWidget {
                     Expanded(
                       child: Container(
                         padding: EdgeInsets.only(right: 5),
-                        height:
-                            MediaQuery.of(context).size.width *
-                                .43,
+                        height: MediaQuery.of(context).size.width * .43,
                         child: Column(
-                          crossAxisAlignment:
-                              CrossAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             Text(
                               'Kaguya Sama: Love is War',
@@ -204,8 +216,7 @@ class CarouselSingle extends StatelessWidget {
                                 style: GoogleFonts.poppins(
                                   fontSize: 13,
                                   fontWeight: FontWeight.w700,
-                                  color: Colors.white
-                                      .withOpacity(.95),
+                                  color: Colors.white.withOpacity(.95),
                                 ),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
@@ -218,8 +229,7 @@ class CarouselSingle extends StatelessWidget {
                                 style: GoogleFonts.poppins(
                                   fontSize: 11,
                                   fontWeight: FontWeight.w300,
-                                  color: Colors.white
-                                      .withOpacity(.95),
+                                  color: Colors.white.withOpacity(.95),
                                 ),
                                 maxLines: 3,
                                 overflow: TextOverflow.ellipsis,
@@ -230,16 +240,12 @@ class CarouselSingle extends StatelessWidget {
                       ),
                     ),
                     Container(
-                      width: MediaQuery.of(context).size.width *
-                          .30,
-                      height:
-                          MediaQuery.of(context).size.width *
-                              .43,
+                      width: MediaQuery.of(context).size.width * .30,
+                      height: MediaQuery.of(context).size.width * .43,
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(7),
-                        border: Border.all(
-                            color: Colors.white, width: 2),
+                        border: Border.all(color: Colors.white, width: 2),
                       ),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(7),
