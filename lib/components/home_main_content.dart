@@ -1,5 +1,8 @@
+import 'package:Samehadaku/pages/detail_episode.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:page_transition/page_transition.dart';
+import 'package:touchable_opacity/touchable_opacity.dart';
 
 class MainContent extends StatelessWidget {
   @override
@@ -34,7 +37,18 @@ class MainContent extends StatelessWidget {
             shrinkWrap: true,
             scrollDirection: Axis.vertical,
             itemCount: 5,
-            itemBuilder: (ctx, idx) => EpsCard(width: width),
+            itemBuilder: (ctx, idx) => TouchableOpacity(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  PageTransition(
+                    type: PageTransitionType.fade,
+                    child: DetailEpisode(),
+                  ),
+                );
+              },
+              child: EpsCard(width: width),
+            ),
           ),
         ],
       ),
@@ -71,8 +85,7 @@ class EpsCard extends StatelessWidget {
           ),
           Expanded(
             child: Container(
-              padding:
-                  EdgeInsets.symmetric(horizontal: 12, vertical: 2),
+              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 2),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
@@ -93,7 +106,9 @@ class EpsCard extends StatelessWidget {
                       style: GoogleFonts.roboto(
                         fontWeight: FontWeight.w300,
                         fontSize: 12,
-                        color: Theme.of(context).textSelectionColor.withOpacity(.8),
+                        color: Theme.of(context)
+                            .textSelectionColor
+                            .withOpacity(.8),
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -108,7 +123,9 @@ class EpsCard extends StatelessWidget {
                           style: GoogleFonts.roboto(
                             fontWeight: FontWeight.w300,
                             fontSize: 12,
-                            color: Theme.of(context).textSelectionColor.withOpacity(1),
+                            color: Theme.of(context)
+                                .textSelectionColor
+                                .withOpacity(1),
                           ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -118,7 +135,9 @@ class EpsCard extends StatelessWidget {
                           style: GoogleFonts.roboto(
                             fontWeight: FontWeight.w300,
                             fontSize: 12,
-                            color: Theme.of(context).textSelectionColor.withOpacity(.8),
+                            color: Theme.of(context)
+                                .textSelectionColor
+                                .withOpacity(.8),
                           ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -135,7 +154,9 @@ class EpsCard extends StatelessWidget {
                           style: GoogleFonts.roboto(
                             fontWeight: FontWeight.w300,
                             fontSize: 12,
-                            color: Theme.of(context).textSelectionColor.withOpacity(1),
+                            color: Theme.of(context)
+                                .textSelectionColor
+                                .withOpacity(1),
                           ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -145,7 +166,9 @@ class EpsCard extends StatelessWidget {
                           style: GoogleFonts.roboto(
                             fontWeight: FontWeight.w300,
                             fontSize: 12,
-                            color: Theme.of(context).textSelectionColor.withOpacity(.8),
+                            color: Theme.of(context)
+                                .textSelectionColor
+                                .withOpacity(.8),
                           ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,

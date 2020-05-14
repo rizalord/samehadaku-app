@@ -1,12 +1,12 @@
 import 'dart:ui';
 
+import 'package:Samehadaku/pages/detail_anime.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:touchable_opacity/touchable_opacity.dart';
 import './mini_component/dots.dart';
-import './../pages/detail_episode.dart';
 
 class Carousel extends StatefulWidget {
   @override
@@ -50,10 +50,8 @@ class _CarouselState extends State<Carousel> {
                         Navigator.push(
                           context,
                           PageTransition(
-                            // curve: Curves.fastOutSlowIn,
-                            // duration: Duration(milliseconds: 300),
                             type: PageTransitionType.fade,
-                            child: DetailEpisode(),
+                            child: DetailAnime(),
                           ),
                         );
                       },

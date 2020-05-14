@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import './../components/detail_header.dart';
 
 class DetailEpisode extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
-    var height = MediaQuery.of(context).size.height;
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -411,42 +411,3 @@ class TextTitle extends StatelessWidget {
   }
 }
 
-class Header extends StatelessWidget {
-  const Header({
-    Key key,
-    @required this.width,
-  }) : super(key: key);
-
-  final double width;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: width,
-      height: 50,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          IconButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            icon: Icon(
-              Icons.chevron_left,
-              size: 24,
-            ),
-            iconSize: 24,
-          ),
-          IconButton(
-            onPressed: () {},
-            icon: Icon(
-              Icons.more_vert,
-              size: 24,
-            ),
-            iconSize: 24,
-          ),
-        ],
-      ),
-    );
-  }
-}
