@@ -1,5 +1,7 @@
+import 'package:Samehadaku/pages/detail_blog.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:touchable_opacity/touchable_opacity.dart';
 import './../components/notif_header.dart';
 
 class NotificationPage extends StatelessWidget {
@@ -78,66 +80,72 @@ class SingleItem extends StatelessWidget {
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
 
-    return Container(
-      height: 108,
-      width: width,
-      margin: EdgeInsets.only(right: 20, left: 20, bottom: 8),
-      padding: EdgeInsets.all(9),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            blurRadius: 4,
-            offset: Offset(0, 4),
-            color: Colors.black.withOpacity(.04),
-          ),
-        ],
-        borderRadius: BorderRadius.circular(4),
-      ),
-      child: Row(
-        children: <Widget>[
-          ImageItem(width: width),
-          SizedBox(width: 8),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                SizedBox(height: 4),
-                Text(
-                  'Serial Novel Overlord akan tamat',
-                  style: GoogleFonts.roboto(
-                    fontSize: 15,
-                    color: Colors.black.withOpacity(.64),
-                  ),
-                  maxLines: 1,
-                  // overflow: TextOverflow.ellipsis,
-                ),
-                SizedBox(height: 7),
-                Text(
-                  'Serial Novel Overlord karya Kugane Maruyama akan berakhir',
-                  style: GoogleFonts.roboto(
-                      fontSize: 13,
-                      color: Colors.black.withOpacity(.71),
-                      fontWeight: FontWeight.w300,
-                      fontStyle: FontStyle.italic),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                SizedBox(height: 7),
-                Text(
-                  '28 April 2020',
-                  style: GoogleFonts.roboto(
-                      fontSize: 12,
-                      color: Colors.black.withOpacity(.42),
-                      fontWeight: FontWeight.w300,
-                      fontStyle: FontStyle.italic),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ],
+    return TouchableOpacity(
+      activeOpacity: .6,
+      onTap: () {
+        Navigator.push(context, MaterialPageRoute(builder: (context) => DetailBlog()));
+      },
+      child: Container(
+        height: 108,
+        width: width,
+        margin: EdgeInsets.only(right: 20, left: 20, bottom: 8),
+        padding: EdgeInsets.all(9),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              blurRadius: 4,
+              offset: Offset(0, 4),
+              color: Colors.black.withOpacity(.04),
             ),
-          )
-        ],
+          ],
+          borderRadius: BorderRadius.circular(4),
+        ),
+        child: Row(
+          children: <Widget>[
+            ImageItem(width: width),
+            SizedBox(width: 8),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  SizedBox(height: 4),
+                  Text(
+                    'Serial Novel Overlord akan tamat',
+                    style: GoogleFonts.roboto(
+                      fontSize: 15,
+                      color: Colors.black.withOpacity(.64),
+                    ),
+                    maxLines: 1,
+                    // overflow: TextOverflow.ellipsis,
+                  ),
+                  SizedBox(height: 7),
+                  Text(
+                    'Serial Novel Overlord karya Kugane Maruyama akan berakhir',
+                    style: GoogleFonts.roboto(
+                        fontSize: 13,
+                        color: Colors.black.withOpacity(.71),
+                        fontWeight: FontWeight.w300,
+                        fontStyle: FontStyle.italic),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  SizedBox(height: 7),
+                  Text(
+                    '28 April 2020',
+                    style: GoogleFonts.roboto(
+                        fontSize: 12,
+                        color: Colors.black.withOpacity(.42),
+                        fontWeight: FontWeight.w300,
+                        fontStyle: FontStyle.italic),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
