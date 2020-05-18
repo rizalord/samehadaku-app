@@ -99,7 +99,7 @@ class WithIcon extends StatelessWidget {
             style: GoogleFonts.poppins(
                 fontSize: 16,
                 fontWeight: FontWeight.w500,
-                color: Color(0xFF222222).withOpacity(.83)),
+                color: Theme.of(context).textSelectionColor.withOpacity(.83)),
           ),
           SizedBox(height: 10),
           Padding(

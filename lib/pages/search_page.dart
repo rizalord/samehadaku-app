@@ -17,10 +17,10 @@ class SearchPage extends StatelessWidget {
             child: Stack(
               children: <Widget>[
                 // IF STARTER
-                ListStarter(width: width, height: height),
+                // ListStarter(width: width, height: height),
 
                 // IF DATA NOT EMPTY
-                // ListFilled(width: width),
+                ListFilled(width: width),
 
                 // IF DATA EMPTY
                 // ListEmpty(width: width),
@@ -190,15 +190,17 @@ class ListItem extends StatelessWidget {
                 children: <Widget>[
                   Text(
                     'Hachi-nan tte, Sore wa Nai deshou!',
-                    style:
-                        GoogleFonts.poppins(fontSize: 15, color: Colors.black),
+                    style: GoogleFonts.poppins(
+                      fontSize: 15,
+                      color: Theme.of(context).textSelectionColor,
+                    ),
                   ),
                   SizedBox(height: 5),
                   Text(
                     'Ongoing',
                     style: GoogleFonts.poppins(
                       fontSize: 13,
-                      color: Color(0xFF777777),
+                      color: Theme.of(context).textSelectionColor.withOpacity(.5),
                     ),
                   ),
                   SizedBox(height: 8),
@@ -215,14 +217,14 @@ class ListItem extends StatelessWidget {
                         Icon(
                           Icons.remove_red_eye,
                           size: 13,
-                          color: Colors.black.withOpacity(.73),
+                          color: Theme.of(context).textSelectionColor.withOpacity(.73),
                         ),
                         SizedBox(width: 6),
                         Text(
                           '2341 Dilihat',
                           style: GoogleFonts.poppins(
                             fontSize: 12,
-                            color: Colors.black.withOpacity(.73),
+                            color: Theme.of(context).textSelectionColor.withOpacity(.73),
                           ),
                         ),
                       ],
@@ -256,7 +258,7 @@ class GenreItem extends StatelessWidget {
         'Comedy',
         style: GoogleFonts.roboto(
           fontSize: 12,
-          color: Colors.black.withOpacity(.56),
+          color: Theme.of(context).textSelectionColor.withOpacity(.56),
         ),
       ),
     );

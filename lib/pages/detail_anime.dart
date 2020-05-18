@@ -19,7 +19,7 @@ class DetailAnime extends StatelessWidget {
               AnimeHeader(width: width),
               Sinopsis(width: width),
               Detail(width: width),
-              YoutubePlay(width: width),
+              YoutubePlay(width),
               EpisodeList(width: width),
               Rekomendasi(width: width),
               LatestUpdate(width: width)
@@ -364,13 +364,11 @@ class SingleLink extends StatelessWidget {
 }
 
 class YoutubePlay extends StatelessWidget {
-  YoutubePlay({
-    Key key,
-    @required this.width,
-  }) : super(key: key);
+  YoutubePlay(this.width);
 
   final double width;
-  YoutubePlayerController _controller = YoutubePlayerController(
+
+  final YoutubePlayerController _controller = YoutubePlayerController(
     initialVideoId: 'uPo9Cvigf_c',
     flags: YoutubePlayerFlags(
       autoPlay: false,
@@ -569,12 +567,9 @@ class _DetailState extends State<Detail> {
 }
 
 class DetailText extends StatelessWidget {
-  String first, second;
+  final String first, second;
 
-  DetailText(first, second) {
-    this.first = first;
-    this.second = second;
-  }
+  DetailText(this.first, this.second);
 
   @override
   Widget build(BuildContext context) {
@@ -897,7 +892,7 @@ class AnimeHeader extends StatelessWidget {
                         'Hachi-nan tte, Sore wa Nai deshou!',
                         style: GoogleFonts.poppins(
                           fontSize: 16,
-                          color: Colors.black,
+                          color: Theme.of(context).textSelectionColor,
                         ),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
@@ -907,7 +902,7 @@ class AnimeHeader extends StatelessWidget {
                         style: GoogleFonts.poppins(
                           fontSize: 15,
                           fontWeight: FontWeight.w300,
-                          color: Colors.black.withOpacity(.53),
+                          color: Theme.of(context).textSelectionColor.withOpacity(.53),
                         ),
                       ),
                       SizedBox(height: 8),

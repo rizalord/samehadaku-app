@@ -1,5 +1,8 @@
+import 'package:Samehadaku/pages/browser.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:page_transition/page_transition.dart';
+import 'package:touchable_opacity/touchable_opacity.dart';
 import './../components/detail_header.dart';
 
 class DetailEpisode extends StatelessWidget {
@@ -72,10 +75,9 @@ class DetailEpisode extends StatelessWidget {
                       child: Text(
                         'Reached End of Page',
                         style: GoogleFonts.poppins(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w300,
-                          color: Colors.black.withOpacity(.53)
-                        ),
+                            fontSize: 15,
+                            fontWeight: FontWeight.w300,
+                            color: Colors.black.withOpacity(.53)),
                       ),
                     ),
                     SizedBox(height: 8),
@@ -143,9 +145,9 @@ class SingleFormat extends StatelessWidget {
             child: Text(
               'MKV',
               style: GoogleFonts.poppins(
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-              ),
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.black),
             ),
           ),
           SingleQuality(width: width),
@@ -186,17 +188,30 @@ class SingleQuality extends StatelessWidget {
               ),
             ),
           ),
-          Container(
-            width: (width * .21),
-            height: 40,
-            color: Color(0xFFEFEFEF),
-            alignment: Alignment.center,
-            child: Text(
-              'ZS',
-              style: GoogleFonts.poppins(
-                fontSize: 15,
-                fontWeight: FontWeight.w500,
-                color: Colors.lightBlue,
+          TouchableOpacity(
+            activeOpacity: .7,
+            onTap: () {
+              Navigator.push(
+                context,
+                PageTransition(
+                  type: PageTransitionType.rightToLeft,
+                  alignment: Alignment.bottomCenter,
+                  child: Browser(),
+                ),
+              );
+            },
+            child: Container(
+              width: (width * .21),
+              height: 40,
+              color: Color(0xFFEFEFEF),
+              alignment: Alignment.center,
+              child: Text(
+                'ZS',
+                style: GoogleFonts.poppins(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.lightBlue,
+                ),
               ),
             ),
           ),
@@ -254,7 +269,7 @@ class PrevAllNext extends StatelessWidget {
           Container(
             width: width * .33,
             child: Center(
-              child: Icon(Icons.chevron_left),
+              child: Icon(Icons.chevron_left, color: Colors.black),
             ),
           ),
           Container(
@@ -270,7 +285,7 @@ class PrevAllNext extends StatelessWidget {
           Container(
             width: width * .33,
             child: Center(
-              child: Icon(Icons.chevron_right),
+              child: Icon(Icons.chevron_right, color: Colors.black),
             ),
           ),
         ],
@@ -339,13 +354,15 @@ class TextEpisode extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Icon(Icons.play_arrow, size: 24, color: Colors.black.withOpacity(.5)),
+          Icon(Icons.play_arrow,
+              size: 24,
+              color: Theme.of(context).textSelectionColor.withOpacity(.5)),
           SizedBox(width: 5),
           Text(
             'Episode 4',
             style: GoogleFonts.roboto(
               fontSize: 16,
-              color: Colors.black.withOpacity(.5),
+              color: Theme.of(context).textSelectionColor.withOpacity(.5),
             ),
           ),
           SizedBox(width: 7),
@@ -410,4 +427,3 @@ class TextTitle extends StatelessWidget {
     );
   }
 }
-
