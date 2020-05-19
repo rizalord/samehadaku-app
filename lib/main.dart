@@ -1,8 +1,10 @@
 // Copyright 2020 Rizalord Developer. All rights reserved.
 // This App is created for Samehadaku.vip only
 
+import 'package:Samehadaku/bloc/download_bloc.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import './pages/splash_screen.dart';
 
@@ -46,71 +48,74 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      themeMode: ThemeMode.dark,
-      // DARK THEME
-      darkTheme: ThemeData(
-        brightness: Brightness.dark,
-        unselectedWidgetColor:
-            Colors.white.withOpacity(.72) // Icon Header Color [Home]
-        ,
-        tabBarTheme: TabBarTheme(
-          unselectedLabelColor: Colors.white,
-          labelColor: Colors.lightBlue,
-        ),
-        sliderTheme: SliderThemeData(
-          disabledActiveTrackColor: Color(0xFFC4C4C4),
-          activeTrackColor: Color(0xFF4CC6E1),
-        ),
-        textTheme: TextTheme(
-          headline1: GoogleFonts.poppins(
-            fontSize: 18,
-            color: Colors.white,
-            fontWeight: FontWeight.w500,
+    return BlocProvider<DownloadBloc>(
+      create: (ctx) => DownloadBloc(),
+      child: MaterialApp(
+        themeMode: ThemeMode.dark,
+        // DARK THEME
+        darkTheme: ThemeData(
+          brightness: Brightness.dark,
+          unselectedWidgetColor:
+              Colors.white.withOpacity(.72) // Icon Header Color [Home]
+          ,
+          tabBarTheme: TabBarTheme(
+            unselectedLabelColor: Colors.white,
+            labelColor: Colors.lightBlue,
           ),
-          headline2: GoogleFonts.poppins(
-            fontWeight: FontWeight.w300,
-            fontSize: 13,
-            color: Colors.white.withOpacity(.61),
-          ),
-        ),
-        dividerColor: Colors.white.withOpacity(.08),
-        textSelectionColor: Colors.white,
-        textSelectionHandleColor: Colors.white.withOpacity(.6),
-        canvasColor: Colors.black,
-      ),
-
-      // LIGHT THEME
-      theme: ThemeData(
-        scaffoldBackgroundColor: Color(0xFFFCFCFC),
-        brightness: Brightness.light,
-        unselectedWidgetColor:
-            Colors.black.withOpacity(.52), // Icon Header Color [Home]
-        sliderTheme: SliderThemeData(
+          sliderTheme: SliderThemeData(
             disabledActiveTrackColor: Color(0xFFC4C4C4),
-            activeTrackColor: Color(0xFF4CC6E1)),
-        tabBarTheme: TabBarTheme(
-          labelColor: Colors.white,
-          unselectedLabelColor: Colors.lightBlue,
-        ),
-        textTheme: TextTheme(
-          headline1: GoogleFonts.poppins(
-            fontSize: 18,
-            color: Colors.lightBlue,
-            fontWeight: FontWeight.w500,
+            activeTrackColor: Color(0xFF4CC6E1),
           ),
-          headline2: GoogleFonts.poppins(
-            fontWeight: FontWeight.w300,
-            fontSize: 13,
-            color: Colors.black.withOpacity(.61),
+          textTheme: TextTheme(
+            headline1: GoogleFonts.poppins(
+              fontSize: 18,
+              color: Colors.white,
+              fontWeight: FontWeight.w500,
+            ),
+            headline2: GoogleFonts.poppins(
+              fontWeight: FontWeight.w300,
+              fontSize: 13,
+              color: Colors.white.withOpacity(.61),
+            ),
           ),
+          dividerColor: Colors.white.withOpacity(.08),
+          textSelectionColor: Colors.white,
+          textSelectionHandleColor: Colors.white.withOpacity(.6),
+          canvasColor: Colors.black,
         ),
-        dividerColor: Colors.black.withOpacity(.08),
-        textSelectionColor: Colors.black,
-        textSelectionHandleColor: Colors.lightBlue.withOpacity(.5),
-        canvasColor: Colors.white,
+
+        // LIGHT THEME
+        theme: ThemeData(
+          scaffoldBackgroundColor: Color(0xFFFCFCFC),
+          brightness: Brightness.light,
+          unselectedWidgetColor:
+              Colors.black.withOpacity(.52), // Icon Header Color [Home]
+          sliderTheme: SliderThemeData(
+              disabledActiveTrackColor: Color(0xFFC4C4C4),
+              activeTrackColor: Color(0xFF4CC6E1)),
+          tabBarTheme: TabBarTheme(
+            labelColor: Colors.white,
+            unselectedLabelColor: Colors.lightBlue,
+          ),
+          textTheme: TextTheme(
+            headline1: GoogleFonts.poppins(
+              fontSize: 18,
+              color: Colors.lightBlue,
+              fontWeight: FontWeight.w500,
+            ),
+            headline2: GoogleFonts.poppins(
+              fontWeight: FontWeight.w300,
+              fontSize: 13,
+              color: Colors.black.withOpacity(.61),
+            ),
+          ),
+          dividerColor: Colors.black.withOpacity(.08),
+          textSelectionColor: Colors.black,
+          textSelectionHandleColor: Colors.lightBlue.withOpacity(.5),
+          canvasColor: Colors.white,
+        ),
+        home: SplashScreenPage(),
       ),
-      home: SplashScreenPage(),
     );
   }
 }

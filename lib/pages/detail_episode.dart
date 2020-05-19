@@ -9,6 +9,8 @@ class DetailEpisode extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
+    String title =
+        'Kaguya-sama wa Kokurasetai?: Tensai-tachi no Renai Zunousen Episode 4 Subtitle Indonesia';
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -18,75 +20,89 @@ class DetailEpisode extends StatelessWidget {
             children: <Widget>[
               Header(width: width),
               SizedBox(height: 10),
-              TextTitle(width: width),
+              TextTitle(width: width, title: title),
               Divider(width: width),
               Thumbnail(width: width),
               TextEpisode(),
               Poster(width: width),
               PrevAllNext(width: width),
-              AllEpisode(width: width),
-              Container(
-                decoration: BoxDecoration(color: Colors.white, boxShadow: [
-                  BoxShadow(
-                      blurRadius: 4,
-                      offset: Offset(0, -4),
-                      color: Colors.black.withOpacity(.06))
-                ]),
-                padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-                width: width,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(
-                      'Rekomendasi',
-                      style: GoogleFonts.poppins(
-                          fontSize: 17,
-                          color: Color(0xFF2F2F2F),
-                          fontWeight: FontWeight.w400),
-                    ),
-                    SizedBox(height: 15),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Image.network(
-                          'https://i0.wp.com/samehadaku.vip/wp-content/uploads/2020/04/106229.jpg?quality=100',
-                          width: width * .44,
-                          height: width * .57,
-                          fit: BoxFit.cover,
-                        ),
-                        Image.network(
-                          'https://i0.wp.com/samehadaku.vip/wp-content/uploads/2020/04/106229.jpg?quality=100',
-                          width: width * .44,
-                          height: width * .57,
-                          fit: BoxFit.cover,
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 30),
-                    Center(
-                      child: Container(
-                        height: 2,
-                        width: width * .1,
-                        color: Colors.black.withOpacity(.21),
-                      ),
-                    ),
-                    SizedBox(height: 10),
-                    Center(
-                      child: Text(
-                        'Reached End of Page',
-                        style: GoogleFonts.poppins(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w300,
-                            color: Colors.black.withOpacity(.53)),
-                      ),
-                    ),
-                    SizedBox(height: 8),
-                  ],
-                ),
-              )
+              AllEpisode(width: width , title: title),
+              Recomendation(width: width)
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class Recomendation extends StatelessWidget {
+  const Recomendation({
+    Key key,
+    @required this.width,
+  }) : super(key: key);
+
+  final double width;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(color: Colors.white, boxShadow: [
+        BoxShadow(
+            blurRadius: 4,
+            offset: Offset(0, -4),
+            color: Colors.black.withOpacity(.06))
+      ]),
+      padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+      width: width,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Text(
+            'Rekomendasi',
+            style: GoogleFonts.poppins(
+                fontSize: 17,
+                color: Color(0xFF2F2F2F),
+                fontWeight: FontWeight.w400),
+          ),
+          SizedBox(height: 15),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Image.network(
+                'https://i0.wp.com/samehadaku.vip/wp-content/uploads/2020/04/106229.jpg?quality=100',
+                width: width * .44,
+                height: width * .57,
+                fit: BoxFit.cover,
+              ),
+              Image.network(
+                'https://i0.wp.com/samehadaku.vip/wp-content/uploads/2020/04/106229.jpg?quality=100',
+                width: width * .44,
+                height: width * .57,
+                fit: BoxFit.cover,
+              ),
+            ],
+          ),
+          SizedBox(height: 30),
+          Center(
+            child: Container(
+              height: 2,
+              width: width * .1,
+              color: Colors.black.withOpacity(.21),
+            ),
+          ),
+          SizedBox(height: 10),
+          Center(
+            child: Text(
+              'Reached End of Page',
+              style: GoogleFonts.poppins(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w300,
+                  color: Colors.black.withOpacity(.53)),
+            ),
+          ),
+          SizedBox(height: 8),
+        ],
       ),
     );
   }
@@ -96,9 +112,11 @@ class AllEpisode extends StatelessWidget {
   const AllEpisode({
     Key key,
     @required this.width,
+    this.title
   }) : super(key: key);
 
   final double width;
+  final String title;
 
   @override
   Widget build(BuildContext context) {
@@ -117,9 +135,9 @@ class AllEpisode extends StatelessWidget {
       // MKV , MP4 , x265
       child: Column(
         children: <Widget>[
-          SingleFormat(width: width),
-          SingleFormat(width: width),
-          SingleFormat(width: width),
+          SingleFormat(width: width , title: title),
+          SingleFormat(width: width , title: title),
+          SingleFormat(width: width , title: title),
         ],
       ),
     );
@@ -130,9 +148,11 @@ class SingleFormat extends StatelessWidget {
   const SingleFormat({
     Key key,
     @required this.width,
+    this.title
   }) : super(key: key);
 
   final double width;
+  final String title;
 
   @override
   Widget build(BuildContext context) {
@@ -150,10 +170,10 @@ class SingleFormat extends StatelessWidget {
                   color: Colors.black),
             ),
           ),
-          SingleQuality(width: width),
-          SingleQuality(width: width),
-          SingleQuality(width: width),
-          SingleQuality(width: width),
+          SingleQuality(width: width , title: title),
+          SingleQuality(width: width , title: title),
+          SingleQuality(width: width , title: title),
+          SingleQuality(width: width , title: title),
         ],
       ),
     );
@@ -164,9 +184,11 @@ class SingleQuality extends StatelessWidget {
   const SingleQuality({
     Key key,
     @required this.width,
+    this.title
   }) : super(key: key);
 
   final double width;
+  final String title;
 
   @override
   Widget build(BuildContext context) {
@@ -196,7 +218,7 @@ class SingleQuality extends StatelessWidget {
                 PageTransition(
                   type: PageTransitionType.rightToLeft,
                   alignment: Alignment.bottomCenter,
-                  child: Browser(),
+                  child: Browser(title: title),
                 ),
               );
             },
@@ -409,16 +431,18 @@ class TextTitle extends StatelessWidget {
   const TextTitle({
     Key key,
     @required this.width,
+    this.title,
   }) : super(key: key);
 
   final double width;
+  final String title;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: width * .1),
       child: Text(
-        'Kaguya-sama wa Kokurasetai?: Tensai-tachi no Renai Zunousen Episode 4 Subtitle Indonesia',
+        title,
         style: GoogleFonts.poppins(
           fontSize: 16,
         ),
