@@ -51,7 +51,7 @@ class _MyAppState extends State<MyApp> {
     return BlocProvider<DownloadBloc>(
       create: (ctx) => DownloadBloc(),
       child: MaterialApp(
-        themeMode: ThemeMode.dark,
+        themeMode: ThemeMode.light,
         // DARK THEME
         darkTheme: ThemeData(
           brightness: Brightness.dark,

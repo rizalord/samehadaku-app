@@ -99,6 +99,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.1.0"
+  filesize:
+    dependency: "direct main"
+    description:
+      name: filesize
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.4"
   firebase:
     dependency: transitive
     description:
@@ -364,6 +371,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.2.15"
+  thumbnails:
+    dependency: "direct main"
+    description:
+      name: thumbnails
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.1"
   touchable_opacity:
     dependency: "direct main"
     description:

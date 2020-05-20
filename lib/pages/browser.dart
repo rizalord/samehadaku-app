@@ -84,15 +84,22 @@ class _BrowserState extends State<Browser> {
     // print(dir);
     // print(fileName);
 
+    // menambahkan download ke list download bloc
     List currentState = bloc.state;
-    currentState.add({'title': widget.title, 'name': fileName , 'percentage': 0});
+    currentState.add({
+      'title': widget.title,
+      'fileName': fileName,
+      'percentage': 0,
+      'fileSize': 0,
+      'fileDownloaded': 0
+    });
     bloc.add(currentState);
 
     Navigator.pop(context);
     try {
       await dio.download(
-        'https://upload.wikimedia.org/wikipedia/commons/e/e4/GatesofArctic.jpg',
-        '${dir}/${fileName}.jpg',
+        urlDownload,
+        '${dir}/${fileName}',
         deleteOnError: true,
         onReceiveProgress: (rec, total) {
           if (rec == total) {
@@ -106,14 +113,24 @@ class _BrowserState extends State<Browser> {
               fontSize: 16.0,
             );
           }
+
+          // Update persentasi download
           List currentState = bloc.state;
-          currentState = currentState.map((e){
-            if(e['name'] == fileName ){
+          currentState = currentState.map((e) {
+            if (e['fileName'] == fileName) {
               e['percentage'] = ((rec / total) * 100).toStringAsFixed(0);
+              e['fileSize'] = total;
+              e['fileDownloaded'] = rec;
             }
-            print(e['percentage']);
             return e;
           }).toList();
+
+          // Hapus data pada list ketika download selesai
+          if (rec == total) {
+            currentState =
+                currentState.where((e) => e['name'] != fileName).toList();
+          }
+
           bloc.add(currentState);
 
           print(

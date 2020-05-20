@@ -50,7 +50,7 @@ class Footer extends StatelessWidget {
             child: Container(
               height: 2,
               width: width * .1,
-              color: Colors.black.withOpacity(.21),
+              color: Theme.of(context).textSelectionColor.withOpacity(.21),
             ),
           ),
           SizedBox(height: 10),
@@ -58,9 +58,10 @@ class Footer extends StatelessWidget {
             child: Text(
               'Reached End of Page',
               style: GoogleFonts.poppins(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w300,
-                  color: Colors.black.withOpacity(.53)),
+                fontSize: 15,
+                fontWeight: FontWeight.w300,
+                color: Theme.of(context).textSelectionColor.withOpacity(.53),
+              ),
             ),
           ),
           SizedBox(height: 16),
@@ -176,7 +177,8 @@ class ListParagraph extends StatelessWidget {
                   'Sebuah game besutan Bandai Namco Entertainment berjudul Tales of Crestoria bakal diluncurkan pada awal Bulan Juni 2020. Hal ini terungkap dari Akun Twitter resmi untuk game ini. Peluncuran akan dilakukan secara simultan diseluruh dunia dan pada nantinya perusahaan akan merilis video promosi baru.',
                   style: GoogleFonts.poppins(
                     fontSize: 14,
-                    color: Colors.black.withOpacity(.75),
+                    color:
+                        Theme.of(context).textSelectionColor.withOpacity(.75),
                   ),
                 )
               : Container(
@@ -187,7 +189,9 @@ class ListParagraph extends StatelessWidget {
                         'Kohei Amasaki sebagai Kanata Hjuger',
                         style: GoogleFonts.poppins(
                           fontSize: 14,
-                          color: Colors.black.withOpacity(.75),
+                          color: Theme.of(context)
+                              .textSelectionColor
+                              .withOpacity(.75),
                         ),
                       ),
                       SizedBox(height: 7.5),
@@ -233,7 +237,7 @@ class Author extends StatelessWidget {
             'Sorewa Net  - 27 April 2020',
             style: GoogleFonts.poppins(
               fontSize: 13,
-              color: Colors.black.withOpacity(.34),
+              color: Theme.of(context).textSelectionColor.withOpacity(.34),
             ),
           )
         ],
@@ -535,7 +539,7 @@ class Divider extends StatelessWidget {
     return Container(
       width: width,
       height: 1,
-      color: Colors.black.withOpacity(.08),
+      color: Theme.of(context).textSelectionColor.withOpacity(.2),
       margin: EdgeInsets.symmetric(
         horizontal: more ? width * .05 : width * .1,
         vertical: 14,

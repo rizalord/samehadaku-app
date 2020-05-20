@@ -1,31 +1,113 @@
+import 'dart:io';
+
+import 'package:Samehadaku/bloc/download_bloc.dart';
+import 'package:filesize/filesize.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
+import 'package:thumbnails/thumbnails.dart';
 
-class FilledDownload extends StatelessWidget {
+class FilledDownload extends StatefulWidget {
+  final List<Map> data;
+  final List<dynamic> dataDownload;
+
+  FilledDownload({this.data, this.dataDownload});
+
+  @override
+  _FilledDownloadState createState() => _FilledDownloadState();
+}
+
+class _FilledDownloadState extends State<FilledDownload> {
+  List<Widget> data = [SizedBox(height: 14)];
+
+  @override
+  void initState() {
+    data
+      ..addAll(
+        widget.data.map(
+          (e) {
+            return Item(
+              title: e['fileName'],
+              fileSize: filesize(e['fileSize']),
+              downloaded: true,
+              filePath: e['filePath'],
+            );
+          },
+        ),
+      )
+      ..addAll(widget.dataDownload.map((e) {
+        print(e);
+        return Item(
+          title: e['fileName'],
+          fileSize: filesize(e['fileSize']),
+          downloaded: false,
+          filePath: null,
+          fileDownloaded: filesize(e['fileDownloaded']),
+        );
+      }));
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-
     return Flexible(
       fit: FlexFit.loose,
       child: Container(
         child: Column(
-          children: <Widget>[
-            SizedBox(height: 14),
-            Item(),
-            Item(),
-            Item(),
-          ],
+          children: data,
         ),
       ),
     );
   }
 }
 
-class Item extends StatelessWidget {
-  const Item({
-    Key key,
-  }) : super(key: key);
+class Item extends StatefulWidget {
+  const Item(
+      {Key key,
+      this.title,
+      this.fileSize,
+      this.downloaded,
+      this.filePath,
+      this.fileDownloaded = null})
+      : super(key: key);
+
+  final String title, fileSize, filePath, fileDownloaded;
+  final bool downloaded;
+
+  @override
+  _ItemState createState() => _ItemState();
+}
+
+class _ItemState extends State<Item> {
+  String title, fileSize, filePath, thumbnail;
+  bool downloaded;
+
+  @override
+  void initState() {
+    this.title = widget.title;
+    this.fileSize = widget.fileSize;
+    this.filePath = widget.filePath;
+    this.downloaded = widget.downloaded;
+
+    getThumbnail();
+    super.initState();
+  }
+
+  void getThumbnail() async {
+    String thumb = await Thumbnails.getThumbnail(
+      thumbnailFolder: (await getExternalStorageDirectory()).path +
+          Platform.pathSeparator +
+          'thumbnail',
+      videoFile: filePath,
+      imageType: ThumbFormat.PNG,
+      quality: 30,
+    );
+
+    setState(() {
+      thumbnail = thumb;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,12 +123,14 @@ class Item extends StatelessWidget {
             height: double.infinity,
             width: width * 0.3,
             decoration: BoxDecoration(
-              border: Border.all(width: 1, color: Colors.lightBlue),
-            ),
-            child: Image.network(
-              'https://i0.wp.com/samehadaku.vip/wp-content/uploads/2020/05/2020-05-08_09-58-38.jpg?quality=80&resize=154,104',
-              fit: BoxFit.cover,
-            ),
+                border: Border.all(width: 1, color: Colors.lightBlue),
+                color: Colors.black),
+            child: thumbnail != null
+                ? Image.file(
+                    File(thumbnail),
+                    fit: BoxFit.cover,
+                  )
+                : Container(),
           ),
           SizedBox(width: 10),
           Expanded(
@@ -55,7 +139,7 @@ class Item extends StatelessWidget {
               children: <Widget>[
                 SizedBox(height: 2),
                 Text(
-                  'Kakushigoto Episode 6',
+                  widget.title,
                   style: GoogleFonts.roboto(
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
@@ -72,7 +156,7 @@ class Item extends StatelessWidget {
                     alignment: MainAxisAlignment.start,
                     padding: EdgeInsets.only(left: 5),
                     progressColor: Colors.lightBlue,
-                    percent: 1,
+                    percent: widget.downloaded ? 1 : 0,
                   ),
                 ),
                 SizedBox(height: 10),
@@ -82,18 +166,20 @@ class Item extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: <Widget>[
-                      Text(
-                        '6.01MB/s',
-                        style: GoogleFonts.roboto(
-                          fontSize: 13,
-                          color: Theme.of(context)
-                              .textSelectionColor
-                              .withOpacity(.77),
-                        ),
-                      ),
+                      !widget.downloaded
+                          ? Text(
+                              '6.01MB/s',
+                              style: GoogleFonts.roboto(
+                                fontSize: 13,
+                                color: Theme.of(context)
+                                    .textSelectionColor
+                                    .withOpacity(.77),
+                              ),
+                            )
+                          : Container(),
                       SizedBox(width: 16),
                       Text(
-                        '45.50MB/45.50MB',
+                        '${widget.fileDownloaded == null ? widget.fileSize :  widget.fileDownloaded}/${widget.fileSize}',
                         style: GoogleFonts.roboto(
                           fontSize: 13,
                           color: Theme.of(context)
