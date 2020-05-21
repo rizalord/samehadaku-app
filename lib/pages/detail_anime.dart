@@ -1,31 +1,82 @@
+import 'dart:convert';
+
+import 'package:Samehadaku/setting.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import './../components/detail_header.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
+import 'package:http/http.dart' as http;
 
-class DetailAnime extends StatelessWidget {
+class DetailAnime extends StatefulWidget {
+  final String url;
+
+  DetailAnime({this.url});
+
+  @override
+  _DetailAnimeState createState() => _DetailAnimeState();
+}
+
+class _DetailAnimeState extends State<DetailAnime> {
+  Map data;
+
+  @override
+  void initState() {
+    getData();
+    super.initState();
+  }
+
+  getData() async {
+    var url = '${Setting().restendpoint}anime/${widget.url}/';
+
+    var response = json.decode((await http.get(url)).body);
+
+    if (this.mounted)
+      setState(() {
+        data = response;
+      });
+  }
+
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
-    // var height = MediaQuery.of(context).size.height;
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            children: <Widget>[
-              Header(width: width),
-              AnimeHeader(width: width),
-              Sinopsis(width: width),
-              Detail(width: width),
-              YoutubePlay(width),
-              EpisodeList(width: width),
-              Rekomendasi(width: width),
-              LatestUpdate(width: width)
-            ],
-          ),
-        ),
+        child: data == null
+            ? Center(child: CircularProgressIndicator())
+            : SingleChildScrollView(
+                child: Column(
+                  children: <Widget>[
+                    Header(width: width),
+                    AnimeHeader(
+                      width: width,
+                      image: data['image'],
+                      title: data['title'],
+                      ratingValue: data['ratingValue'],
+                      ratingCount: data['ratingCount'],
+                    ),
+                    Sinopsis(
+                      width: width,
+                      text: data['sinopsis'],
+                    ),
+                    Detail(
+                        width: width,
+                        genre: data['genre'],
+                        detail: data['detail']),
+                    YoutubePlay(
+                      width: width,
+                      id: data['youtube']['id'],
+                    ),
+                    EpisodeList(
+                      width: width,
+                      data: data['list_episode'],
+                    ),
+                    Rekomendasi(width: width),
+                    LatestUpdate(width: width)
+                  ],
+                ),
+              ),
       ),
     );
   }
@@ -250,9 +301,10 @@ class Rekomendasi extends StatelessWidget {
 }
 
 class EpisodeList extends StatelessWidget {
-  const EpisodeList({Key key, this.width}) : super(key: key);
+  const EpisodeList({Key key, this.width, this.data}) : super(key: key);
 
   final double width;
+  final List data;
 
   @override
   Widget build(BuildContext context) {
@@ -287,14 +339,13 @@ class EpisodeList extends StatelessWidget {
           Flexible(
             fit: FlexFit.loose,
             child: Column(
-              children: <Widget>[
-                SingleLink(width: width),
-                SingleLink(width: width),
-                SingleLink(width: width),
-                SingleLink(width: width),
-                SingleLink(width: width),
-              ],
-            ),
+                children: data
+                    .map((e) => SingleLink(
+                        width: width,
+                        number: e['episode'],
+                        title: e['title'],
+                        date: e['date_uploaded']))
+                    .toList()),
           )
         ],
       ),
@@ -306,9 +357,13 @@ class SingleLink extends StatelessWidget {
   const SingleLink({
     Key key,
     @required this.width,
+    this.number,
+    this.title,
+    this.date,
   }) : super(key: key);
 
   final double width;
+  final String number, title, date;
 
   @override
   Widget build(BuildContext context) {
@@ -324,7 +379,7 @@ class SingleLink extends StatelessWidget {
             color: Colors.lightBlue,
             alignment: Alignment.center,
             child: Text(
-              '5',
+              number,
               style: GoogleFonts.poppins(
                 fontSize: 17,
                 color: Colors.white,
@@ -338,7 +393,7 @@ class SingleLink extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
                 Text(
-                  'Hachi-nan tte, Sore wa Nai deshou Episode 5',
+                  title,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: GoogleFonts.poppins(
@@ -348,7 +403,7 @@ class SingleLink extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  '1 Mei 2020',
+                  date,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: GoogleFonts.poppins(
@@ -363,25 +418,40 @@ class SingleLink extends StatelessWidget {
   }
 }
 
-class YoutubePlay extends StatelessWidget {
-  YoutubePlay(this.width);
+class YoutubePlay extends StatefulWidget {
+  YoutubePlay({
+    this.width,
+    this.id,
+  });
 
   final double width;
+  final String id;
 
-  final YoutubePlayerController _controller = YoutubePlayerController(
-    initialVideoId: 'uPo9Cvigf_c',
-    flags: YoutubePlayerFlags(
-      autoPlay: false,
-      mute: false,
-    ),
-  );
+  @override
+  _YoutubePlayState createState() => _YoutubePlayState();
+}
+
+class _YoutubePlayState extends State<YoutubePlay> {
+  YoutubePlayerController _controller;
+
+  @override
+  void initState() {
+    _controller = YoutubePlayerController(
+      initialVideoId: widget.id,
+      flags: YoutubePlayerFlags(
+        autoPlay: false,
+        mute: false,
+      ),
+    );
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 16),
-      width: width,
-      height: width * .53,
+      width: widget.width,
+      height: widget.width * .53,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(10),
@@ -414,9 +484,13 @@ class Detail extends StatefulWidget {
   Detail({
     Key key,
     @required this.width,
+    this.genre,
+    this.detail,
   }) : super(key: key);
 
   final double width;
+  final List genre;
+  final Map detail;
 
   @override
   _DetailState createState() => _DetailState();
@@ -425,11 +499,19 @@ class Detail extends StatefulWidget {
 class _DetailState extends State<Detail> {
   double width;
   bool _visible = false;
+  List detail = [];
 
   @override
   void initState() {
     width = widget.width;
+    initDetail();
     super.initState();
+  }
+
+  initDetail() {
+    widget.detail.forEach((key, value) {
+      detail.add({'key': key, 'value': value});
+    });
   }
 
   @override
@@ -474,14 +556,9 @@ class _DetailState extends State<Detail> {
                       Container(
                         width: widget.width,
                         child: Wrap(
-                          children: <Widget>[
-                            SingleGenre(text: 'Action'),
-                            SingleGenre(text: 'Adventure'),
-                            SingleGenre(text: 'Drama'),
-                            SingleGenre(text: 'Comedy'),
-                            SingleGenre(text: 'Romance'),
-                            SingleGenre(text: 'Fantasy'),
-                          ],
+                          children: widget.genre
+                              .map((e) => SingleGenre(text: e['text']))
+                              .toList(),
                         ),
                       ),
                       SizedBox(height: 8),
@@ -497,16 +574,9 @@ class _DetailState extends State<Detail> {
                         visible: _visible,
                         child: Wrap(
                           direction: Axis.vertical,
-                          children: <Widget>[
-                            DetailText(
-                                'English', 'The 8th son? Are you kidding me?'),
-                            DetailText('Status', 'Ongoing'),
-                            DetailText('Source', 'Light Novel'),
-                            DetailText('Duration', '23 min. per ep.'),
-                            DetailText('Total Episode', '12'),
-                            DetailText('Season', 'Spring 2020'),
-                            DetailText('Rilis', 'Apr 2, 2020 to ?'),
-                          ],
+                          children: detail
+                              .map((e) => DetailText(e['key'], e['value']))
+                              .toList(),
                         ),
                       ),
                     ],
@@ -628,17 +698,19 @@ class Sinopsis extends StatefulWidget {
   Sinopsis({
     Key key,
     @required this.width,
+    this.text,
   }) : super(key: key);
 
   final double width;
+  final String text;
 
   @override
   _SinopsisState createState() => _SinopsisState();
 }
 
 class _SinopsisState extends State<Sinopsis> {
-  String sinopsisText =
-      'Shingo Ichinomiya, seorang pria berusia 25 tahun yang bekerja di sebuah perusahaan firma, sambil memikirkan hari kerja besok yang sibuk, dia pergi tidur. Namun, ketika dia bangun, dia mendapati Shingo Ichinomiya, seorang pria berusia 25 tahun yang bekerja di sebuah perusahaan firma, sambil memikirkan hari kerja besok yang sibuk, dia pergi tidur.';
+  // String sinopsisText =
+  //     'Shingo Ichinomiya, seorang pria berusia 25 tahun yang bekerja di sebuah perusahaan firma, sambil memikirkan hari kerja besok yang sibuk, dia pergi tidur. Namun, ketika dia bangun, dia mendapati Shingo Ichinomiya, seorang pria berusia 25 tahun yang bekerja di sebuah perusahaan firma, sambil memikirkan hari kerja besok yang sibuk, dia pergi tidur.';
 
   bool overflow = true;
   double width = 0;
@@ -655,7 +727,7 @@ class _SinopsisState extends State<Sinopsis> {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, size) {
-        var text = sinopsisText;
+        var text = widget.text;
         final span = TextSpan(
           text: text,
           style: GoogleFonts.poppins(
@@ -848,9 +920,14 @@ class AnimeHeader extends StatelessWidget {
   const AnimeHeader({
     Key key,
     @required this.width,
+    this.title,
+    this.image,
+    this.ratingCount,
+    this.ratingValue,
   }) : super(key: key);
 
   final double width;
+  final String image, title, ratingValue, ratingCount;
 
   @override
   Widget build(BuildContext context) {
@@ -858,7 +935,6 @@ class AnimeHeader extends StatelessWidget {
       width: width,
       height: width * .5,
       margin: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-      // color: Colors.black,
       child: Row(
         children: <Widget>[
           Container(
@@ -872,7 +948,7 @@ class AnimeHeader extends StatelessWidget {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(8),
               child: Image.network(
-                'https://i0.wp.com/samehadaku.vip/wp-content/uploads/2020/04/106370.jpg?quality=80&resize=150,210',
+                image,
                 fit: BoxFit.cover,
               ),
             ),
@@ -889,7 +965,7 @@ class AnimeHeader extends StatelessWidget {
                     children: <Widget>[
                       SizedBox(height: 5),
                       Text(
-                        'Hachi-nan tte, Sore wa Nai deshou!',
+                        title,
                         style: GoogleFonts.poppins(
                           fontSize: 16,
                           color: Theme.of(context).textSelectionColor,
@@ -902,7 +978,9 @@ class AnimeHeader extends StatelessWidget {
                         style: GoogleFonts.poppins(
                           fontSize: 15,
                           fontWeight: FontWeight.w300,
-                          color: Theme.of(context).textSelectionColor.withOpacity(.53),
+                          color: Theme.of(context)
+                              .textSelectionColor
+                              .withOpacity(.53),
                         ),
                       ),
                       SizedBox(height: 8),
@@ -912,7 +990,7 @@ class AnimeHeader extends StatelessWidget {
                             Icon(Icons.star, color: Colors.yellow, size: 24),
                             SizedBox(width: 5),
                             Text(
-                              '6.50',
+                              ratingValue,
                               style: GoogleFonts.roboto(
                                 fontWeight: FontWeight.w500,
                                 color: Color(0xFF828282),
@@ -920,7 +998,7 @@ class AnimeHeader extends StatelessWidget {
                               ),
                             ),
                             Text(
-                              ' / 4967',
+                              ' / $ratingCount',
                               style: GoogleFonts.roboto(
                                 fontWeight: FontWeight.w300,
                                 color: Color(0xFF6F6F6F),

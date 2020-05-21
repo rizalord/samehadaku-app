@@ -89,7 +89,7 @@ class _BrowserState extends State<Browser> {
     currentState.add({
       'title': widget.title,
       'fileName': fileName,
-      'percentage': 0,
+      'percentage': 0.0,
       'fileSize': 0,
       'fileDownloaded': 0
     });
@@ -118,7 +118,7 @@ class _BrowserState extends State<Browser> {
           List currentState = bloc.state;
           currentState = currentState.map((e) {
             if (e['fileName'] == fileName) {
-              e['percentage'] = ((rec / total) * 100).toStringAsFixed(0);
+              e['percentage'] = double.parse(((rec / total) * 100).toStringAsFixed(0));
               e['fileSize'] = total;
               e['fileDownloaded'] = rec;
             }
@@ -128,7 +128,7 @@ class _BrowserState extends State<Browser> {
           // Hapus data pada list ketika download selesai
           if (rec == total) {
             currentState =
-                currentState.where((e) => e['name'] != fileName).toList();
+                currentState.where((e) => e['fileName'] != fileName).toList();
           }
 
           bloc.add(currentState);

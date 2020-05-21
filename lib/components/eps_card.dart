@@ -2,12 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class EpsCard extends StatelessWidget {
+  final String image, title, episode, author, release;
 
+  EpsCard({
+    this.image,
+    this.title,
+    this.episode,
+    this.author,
+    this.release,
+  });
 
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
-    
+
     return Container(
       width: width,
       height: width * 0.28,
@@ -17,10 +25,14 @@ class EpsCard extends StatelessWidget {
           Container(
             width: width * .4,
             height: width * 0.28,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(5),
+              color: Colors.grey
+            ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(5),
               child: Image.network(
-                'https://i0.wp.com/samehadaku.vip/wp-content/uploads/2020/05/2020-05-07_13-52-32.jpg?quality=100',
+                image,
                 fit: BoxFit.cover,
               ),
             ),
@@ -32,7 +44,7 @@ class EpsCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Text(
-                    'Fruit Basket Season 3',
+                    title,
                     style: GoogleFonts.roboto(
                       fontWeight: FontWeight.w400,
                       fontSize: 16,
@@ -44,7 +56,7 @@ class EpsCard extends StatelessWidget {
                   Container(
                     margin: EdgeInsets.only(top: 8),
                     child: Text(
-                      'Episode 4',
+                      'Episode $episode',
                       style: GoogleFonts.roboto(
                         fontWeight: FontWeight.w300,
                         fontSize: 12,
@@ -73,7 +85,7 @@ class EpsCard extends StatelessWidget {
                           overflow: TextOverflow.ellipsis,
                         ),
                         Text(
-                          'Ktyg -',
+                          author,
                           style: GoogleFonts.roboto(
                             fontWeight: FontWeight.w300,
                             fontSize: 12,
@@ -103,17 +115,19 @@ class EpsCard extends StatelessWidget {
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
-                        Text(
-                          '1 hari yang lalu',
-                          style: GoogleFonts.roboto(
-                            fontWeight: FontWeight.w300,
-                            fontSize: 12,
-                            color: Theme.of(context)
-                                .textSelectionColor
-                                .withOpacity(.8),
+                        Flexible(
+                          child: Text(
+                            release,
+                            style: GoogleFonts.roboto(
+                              fontWeight: FontWeight.w300,
+                              fontSize: 12,
+                              color: Theme.of(context)
+                                  .textSelectionColor
+                                  .withOpacity(.8),
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                           ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
                         ),
                       ],
                     ),

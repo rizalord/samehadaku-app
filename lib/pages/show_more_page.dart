@@ -1,8 +1,11 @@
+import 'dart:convert';
+
 import 'package:Samehadaku/components/eps_card.dart';
 import 'package:Samehadaku/pages/detail_episode.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:touchable_opacity/touchable_opacity.dart';
+import 'package:http/http.dart' as http;
 
 class ShowMorePage extends StatefulWidget {
   @override
@@ -13,11 +16,24 @@ class _ShowMorePageState extends State<ShowMorePage> {
   var _scrollController = ScrollController();
   var _itemCount = 10;
   var _showLoading = false;
+  var _page = 1;
+  var _data = [];
 
   @override
   void initState() {
+    getData();
     super.initState();
     onBottomReached();
+  }
+
+  getData() async {
+    var url = 'https://samehadaku-rest-api.herokuapp.com/page/$_page';
+
+    var response = json.decode((await http.get(url)).body);
+
+    setState(() {
+      _data = response['latest'];
+    });
   }
 
   void onBottomReached() {
@@ -29,15 +45,17 @@ class _ShowMorePageState extends State<ShowMorePage> {
     });
   }
 
-  void addMore() {
+  void addMore() async {
+    _page++;
     setState(() {
       _showLoading = true;
-      Future.delayed(Duration(seconds: 1), () {
+      Future.delayed(Duration(seconds: 0), () async {
+        var url = 'https://samehadaku-rest-api.herokuapp.com/page/$_page';
+        var response = json.decode((await http.get(url)).body);
+
         setState(() {
           _showLoading = false;
-          _itemCount += 5;
-          print('tambah 5 data');
-          print('total data ${_itemCount}');
+          _data.addAll(response['latest']);
         });
       });
     });
@@ -49,54 +67,68 @@ class _ShowMorePageState extends State<ShowMorePage> {
       appBar: AppBar(
         title: Text('Latest Update'),
       ),
-      body: ListView.builder(
-        controller: _scrollController,
-        itemCount: _itemCount,
-        itemBuilder: (ctx, idx) => idx != _itemCount - 1
-            ? TouchableOpacity(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    PageTransition(
-                      type: PageTransitionType.fade,
-                      child: DetailEpisode(),
-                    ),
-                  );
-                },
-                child: Container(
-                  margin: EdgeInsets.only(
-                      left: 12, right: 12, top: idx == 0 ? 12 : 0),
-                  child: EpsCard(),
-                ),
-              )
-            : Column(
-                children: [
-                  TouchableOpacity(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        PageTransition(
-                          type: PageTransitionType.fade,
-                          child: DetailEpisode(),
+      body: _data.isEmpty
+          ? Center(child: CircularProgressIndicator())
+          : ListView.builder(
+              controller: _scrollController,
+              itemCount: _data.length,
+              itemBuilder: (ctx, idx) => idx != _data.length - 1
+                  ? TouchableOpacity(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          PageTransition(
+                            type: PageTransitionType.fade,
+                            child: DetailEpisode(),
+                          ),
+                        );
+                      },
+                      child: Container(
+                        margin: EdgeInsets.only(
+                            left: 12, right: 12, top: idx == 0 ? 12 : 0),
+                        child: EpsCard(
+                          image: _data[idx]['image'],
+                          title: _data[idx]['title'],
+                          episode: _data[idx]['episode'],
+                          author: _data[idx]['postedBy'],
+                          release: _data[idx]['release_time'],
                         ),
-                      );
-                    },
-                    child: Container(
-                      margin: EdgeInsets.only(
-                          left: 12, right: 12, top: idx == 0 ? 12 : 0),
-                      child: EpsCard(),
+                      ),
+                    )
+                  : Column(
+                      children: [
+                        TouchableOpacity(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              PageTransition(
+                                type: PageTransitionType.fade,
+                                child: DetailEpisode(),
+                              ),
+                            );
+                          },
+                          child: Container(
+                            margin: EdgeInsets.only(
+                                left: 12, right: 12, top: idx == 0 ? 12 : 0),
+                            child: EpsCard(
+                              image: _data[idx]['image'],
+                              title: _data[idx]['title'],
+                              episode: _data[idx]['episode'],
+                              author: _data[idx]['postedBy'],
+                              release: _data[idx]['release_time'],
+                            ),
+                          ),
+                        ),
+                        Visibility(
+                          visible: _showLoading,
+                          child: Container(
+                            child: CircularProgressIndicator(),
+                            margin: EdgeInsets.symmetric(vertical: 15),
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                  Visibility(
-                    visible: _showLoading,
-                    child: Container(
-                      child: CircularProgressIndicator(),
-                      margin: EdgeInsets.symmetric(vertical: 15),
-                    ),
-                  ),
-                ],
-              ),
-      ),
+            ),
     );
   }
 }

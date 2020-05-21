@@ -6,6 +6,12 @@ import 'package:page_transition/page_transition.dart';
 import 'package:touchable_opacity/touchable_opacity.dart';
 
 class MainContent extends StatelessWidget {
+
+  final List data;
+
+  MainContent({this.data});
+
+
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
@@ -37,7 +43,7 @@ class MainContent extends StatelessWidget {
             physics: NeverScrollableScrollPhysics(),
             shrinkWrap: true,
             scrollDirection: Axis.vertical,
-            itemCount: 5,
+            itemCount: data.length,
             itemBuilder: (ctx, idx) => TouchableOpacity(
               onTap: () {
                 Navigator.push(
@@ -48,7 +54,13 @@ class MainContent extends StatelessWidget {
                   ),
                 );
               },
-              child: EpsCard(),
+              child: EpsCard(
+                image: data[idx]['image'],
+                title: data[idx]['title'],
+                episode: data[idx]['episode'],
+                author: data[idx]['postedBy'],
+                release: data[idx]['release_time'],
+              ),
             ),
           ),
         ],

@@ -9,6 +9,10 @@ import 'package:touchable_opacity/touchable_opacity.dart';
 import './mini_component/dots.dart';
 
 class Carousel extends StatefulWidget {
+  final List data;
+
+  Carousel({this.data});
+
   @override
   _CarouselState createState() => _CarouselState();
 }
@@ -18,54 +22,64 @@ class _CarouselState extends State<Carousel> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      height: (MediaQuery.of(context).size.width * .65) + 40,
-      padding: EdgeInsets.symmetric(vertical: 12),
-      // margin: EdgeInsets.symmetric(horizontal: 12),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          TitleMusim(),
-          Expanded(
-            child: CarouselSlider(
-              options: CarouselOptions(
-                  height: MediaQuery.of(context).size.width * .65,
-                  viewportFraction: 1.0,
-                  enlargeCenterPage: false,
-                  enableInfiniteScroll: false,
-                  initialPage: 0,
-                  autoPlay: true,
-                  onPageChanged: (int index, reason) {
-                    setState(() {
-                      this.index = index;
-                    });
-                  }),
-              items: [1, 2, 3, 4, 5].map((i) {
-                return Builder(
-                  builder: (BuildContext context) {
-                    return TouchableOpacity(
-                      activeOpacity: .9,
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          PageTransition(
-                            type: PageTransitionType.fade,
-                            child: DetailAnime(),
-                          ),
-                        );
-                      },
-                      child: CarouselSingle(),
-                    );
-                  },
-                );
-              }).toList(),
+    return widget.data.isEmpty
+        ? Container()
+        : Container(
+            width: MediaQuery.of(context).size.width,
+            height: (MediaQuery.of(context).size.width * .65) + 40,
+            padding: EdgeInsets.symmetric(vertical: 12),
+            // margin: EdgeInsets.symmetric(horizontal: 12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                TitleMusim(),
+                Expanded(
+                  child: CarouselSlider(
+                    options: CarouselOptions(
+                        height: MediaQuery.of(context).size.width * .65,
+                        viewportFraction: 1.0,
+                        enlargeCenterPage: false,
+                        enableInfiniteScroll: false,
+                        initialPage: 0,
+                        autoPlay: true,
+                        onPageChanged: (int index, reason) {
+                          setState(() {
+                            this.index = index;
+                          });
+                        }),
+                    items: widget.data.map((e) {
+                      return Builder(
+                        builder: (BuildContext context) {
+                          return TouchableOpacity(
+                            activeOpacity: .9,
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                PageTransition(
+                                  type: PageTransitionType.fade,
+                                  child: DetailAnime(
+                                    url: e['linkId']
+                                  ),
+                                ),
+                              );
+                            },
+                            child: CarouselSingle(
+                              title: e['title'],
+                              image: e['image'],
+                            ),
+                          );
+                        },
+                      );
+                    }).toList(),
+                  ),
+                ),
+                DotsBottom(
+                  index: index,
+                  itemCount: widget.data.length,
+                )
+              ],
             ),
-          ),
-          DotsBottom(index: index)
-        ],
-      ),
-    );
+          );
   }
 }
 
@@ -91,12 +105,10 @@ class TitleMusim extends StatelessWidget {
 }
 
 class DotsBottom extends StatelessWidget {
-  const DotsBottom({
-    Key key,
-    @required this.index,
-  }) : super(key: key);
+  const DotsBottom({Key key, @required this.index, this.itemCount})
+      : super(key: key);
 
-  final int index;
+  final int index, itemCount;
 
   @override
   Widget build(BuildContext context) {
@@ -106,7 +118,7 @@ class DotsBottom extends StatelessWidget {
       width: 15 * 5.5,
       alignment: Alignment.centerLeft,
       child: ListView.builder(
-        itemCount: 5,
+        itemCount: itemCount,
         itemBuilder: (context, idx) => Dots(
           color: idx == index
               ? Theme.of(context).sliderTheme.activeTrackColor
@@ -114,32 +126,14 @@ class DotsBottom extends StatelessWidget {
         ),
         scrollDirection: Axis.horizontal,
       ),
-      // child: Row(
-      //   mainAxisAlignment: MainAxisAlignment.center,
-      //   children: <Widget>[
-      // Dots(color: Theme.of(context).sliderTheme.activeTrackColor),
-      //     Dots(
-      //         color:
-      //             Theme.of(context).sliderTheme.disabledActiveTrackColor),
-      //     Dots(
-      //         color:
-      //             Theme.of(context).sliderTheme.disabledActiveTrackColor),
-      //     Dots(
-      //         color:
-      //             Theme.of(context).sliderTheme.disabledActiveTrackColor),
-      //     Dots(
-      //         color:
-      //             Theme.of(context).sliderTheme.disabledActiveTrackColor),
-      //   ],
-      // ),
     );
   }
 }
 
 class CarouselSingle extends StatelessWidget {
-  const CarouselSingle({
-    Key key,
-  }) : super(key: key);
+  const CarouselSingle({Key key, this.title, this.image}) : super(key: key);
+
+  final String title, image;
 
   @override
   Widget build(BuildContext context) {
@@ -155,8 +149,7 @@ class CarouselSingle extends StatelessWidget {
               child: Container(
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: NetworkImage(
-                        'https://m.media-amazon.com/images/M/MV5BOTkzZjZiOWItZGM5Ny00N2IxLTg4ZTQtYTBiODhlNmRlM2IxXkEyXkFqcGdeQXVyMzgxODM4NjM@._V1_SY1000_CR0,0,707,1000_AL_.jpg'),
+                    image: NetworkImage(image),
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -188,7 +181,7 @@ class CarouselSingle extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             Text(
-                              'Kaguya Sama: Love is War',
+                              title.trim(),
                               style: GoogleFonts.poppins(
                                 fontSize: 18,
                                 fontWeight: FontWeight.w500,
@@ -248,7 +241,7 @@ class CarouselSingle extends StatelessWidget {
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(7),
                         child: Image.network(
-                          'https://m.media-amazon.com/images/M/MV5BOTkzZjZiOWItZGM5Ny00N2IxLTg4ZTQtYTBiODhlNmRlM2IxXkEyXkFqcGdeQXVyMzgxODM4NjM@._V1_SY1000_CR0,0,707,1000_AL_.jpg',
+                          image,
                           fit: BoxFit.cover,
                         ),
                       ),

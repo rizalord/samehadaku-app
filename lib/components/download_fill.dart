@@ -12,40 +12,15 @@ class FilledDownload extends StatefulWidget {
   final List<Map> data;
   final List<dynamic> dataDownload;
 
-  FilledDownload({this.data, this.dataDownload});
+  FilledDownload({this.data = const [], this.dataDownload});
 
   @override
   _FilledDownloadState createState() => _FilledDownloadState();
 }
 
 class _FilledDownloadState extends State<FilledDownload> {
-  List<Widget> data = [SizedBox(height: 14)];
-
   @override
   void initState() {
-    data
-      ..addAll(
-        widget.data.map(
-          (e) {
-            return Item(
-              title: e['fileName'],
-              fileSize: filesize(e['fileSize']),
-              downloaded: true,
-              filePath: e['filePath'],
-            );
-          },
-        ),
-      )
-      ..addAll(widget.dataDownload.map((e) {
-        print(e);
-        return Item(
-          title: e['fileName'],
-          fileSize: filesize(e['fileSize']),
-          downloaded: false,
-          filePath: null,
-          fileDownloaded: filesize(e['fileDownloaded']),
-        );
-      }));
     super.initState();
   }
 
@@ -55,7 +30,31 @@ class _FilledDownloadState extends State<FilledDownload> {
       fit: FlexFit.loose,
       child: Container(
         child: Column(
-          children: data,
+          children: [SizedBox(height: 14)]..addAll(
+              widget.dataDownload.map(
+                (e) {
+                  return Item(
+                    title: e['fileName'],
+                    fileSize: filesize(e['fileSize']),
+                    downloaded: false,
+                    filePath: null,
+                    fileDownloaded: filesize(e['fileDownloaded']),
+                    percentage: e['percentage'],
+                  );
+                },
+              ).toList()
+                ..addAll(
+                  widget.data.map((e) {
+                    return Item(
+                      title: e['fileName'],
+                      fileSize: filesize(e['fileSize']),
+                      downloaded: true,
+                      filePath: e['filePath'],
+                      thumbnail: e['thumbnail'],
+                    );
+                  }).toList(),
+                ),
+            ),
         ),
       ),
     );
@@ -63,16 +62,19 @@ class _FilledDownloadState extends State<FilledDownload> {
 }
 
 class Item extends StatefulWidget {
-  const Item(
-      {Key key,
-      this.title,
-      this.fileSize,
-      this.downloaded,
-      this.filePath,
-      this.fileDownloaded = null})
-      : super(key: key);
+  const Item({
+    Key key,
+    this.title,
+    this.fileSize,
+    this.downloaded,
+    this.filePath,
+    this.fileDownloaded = null,
+    this.percentage,
+    this.thumbnail = null,
+  }) : super(key: key);
 
-  final String title, fileSize, filePath, fileDownloaded;
+  final String title, fileSize, filePath, fileDownloaded, thumbnail;
+  final double percentage;
   final bool downloaded;
 
   @override
@@ -80,7 +82,7 @@ class Item extends StatefulWidget {
 }
 
 class _ItemState extends State<Item> {
-  String title, fileSize, filePath, thumbnail;
+  String title, fileSize, filePath;
   bool downloaded;
 
   @override
@@ -90,23 +92,7 @@ class _ItemState extends State<Item> {
     this.filePath = widget.filePath;
     this.downloaded = widget.downloaded;
 
-    getThumbnail();
     super.initState();
-  }
-
-  void getThumbnail() async {
-    String thumb = await Thumbnails.getThumbnail(
-      thumbnailFolder: (await getExternalStorageDirectory()).path +
-          Platform.pathSeparator +
-          'thumbnail',
-      videoFile: filePath,
-      imageType: ThumbFormat.PNG,
-      quality: 30,
-    );
-
-    setState(() {
-      thumbnail = thumb;
-    });
   }
 
   @override
@@ -125,9 +111,9 @@ class _ItemState extends State<Item> {
             decoration: BoxDecoration(
                 border: Border.all(width: 1, color: Colors.lightBlue),
                 color: Colors.black),
-            child: thumbnail != null
+            child: widget.downloaded == true && widget.thumbnail != null
                 ? Image.file(
-                    File(thumbnail),
+                    File(widget.thumbnail),
                     fit: BoxFit.cover,
                   )
                 : Container(),
@@ -151,13 +137,12 @@ class _ItemState extends State<Item> {
                 SizedBox(height: 7),
                 Container(
                   child: LinearPercentIndicator(
-                    width: width * .58,
-                    lineHeight: 8.0,
-                    alignment: MainAxisAlignment.start,
-                    padding: EdgeInsets.only(left: 5),
-                    progressColor: Colors.lightBlue,
-                    percent: widget.downloaded ? 1 : 0,
-                  ),
+                      width: width * .58,
+                      lineHeight: 8.0,
+                      alignment: MainAxisAlignment.start,
+                      padding: EdgeInsets.only(left: 5),
+                      progressColor: Colors.lightBlue,
+                      percent: widget.downloaded ? 1 : widget.percentage / 100),
                 ),
                 SizedBox(height: 10),
                 Container(
@@ -167,19 +152,20 @@ class _ItemState extends State<Item> {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: <Widget>[
                       !widget.downloaded
-                          ? Text(
-                              '6.01MB/s',
-                              style: GoogleFonts.roboto(
-                                fontSize: 13,
-                                color: Theme.of(context)
-                                    .textSelectionColor
-                                    .withOpacity(.77),
-                              ),
-                            )
+                          // ? Text(
+                          //     '6.01MB/s',
+                          //     style: GoogleFonts.roboto(
+                          //       fontSize: 13,
+                          //       color: Theme.of(context)
+                          //           .textSelectionColor
+                          //           .withOpacity(.77),
+                          //     ),
+                          //   )
+                          ? Container()
                           : Container(),
                       SizedBox(width: 16),
                       Text(
-                        '${widget.fileDownloaded == null ? widget.fileSize :  widget.fileDownloaded}/${widget.fileSize}',
+                        '${widget.fileDownloaded == null ? widget.fileSize : widget.fileDownloaded}/${widget.fileSize}',
                         style: GoogleFonts.roboto(
                           fontSize: 13,
                           color: Theme.of(context)

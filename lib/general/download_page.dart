@@ -6,6 +6,7 @@ import 'package:Samehadaku/components/download_empty.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:thumbnails/thumbnails.dart';
 import './../components/download_header.dart';
 import './../components/download_fill.dart';
 import 'package:path/path.dart';
@@ -43,28 +44,48 @@ class _DownloadPageState extends State<DownloadPage> {
       var dir = (await getExternalStorageDirectory()).path +
           Platform.pathSeparator +
           'download';
-      var newDirList = await Directory(dir).list().toList();
+      var newDirList = await Directory(dir).list().distinct().toList();
 
-      // Thumbnail
-
-      // End thumbnail
       var newDirListMap = newDirList
           .map((e) {
             return {
               'prevData': e.statSync(),
               'fileName': basename(e.path),
               'fileSize': e.statSync().size.toString(),
-              'filePath': e.path
+              'filePath': e.path,
+              'exist': e.existsSync()
             };
           })
           .toList()
-          .where((element) => int.parse(element['fileSize']) > 41686603)
+          .where((element) =>
+              int.parse(element['fileSize']) > 41686603 ||
+              element['exist'] == true)
           .toList();
+
+      newDirListMap = await Future.wait(
+          newDirListMap.map((e) async => await getThumbnail(e)));
 
       setState(() {
         data = newDirListMap;
       });
-    } catch (e) {}
+    } catch (e) {
+      print('tangkap error $e');
+    }
+  }
+
+  Future<Map> getThumbnail(e) async {
+    String thumb = e['thumbnail'] = e['exist'] == true
+        ? await Thumbnails.getThumbnail(
+            thumbnailFolder: (await getExternalStorageDirectory()).path +
+                Platform.pathSeparator +
+                'thumbnail',
+            videoFile: e['filePath'],
+            imageType: ThumbFormat.PNG,
+            quality: 30,
+          )
+        : null;
+
+    return e;
   }
 
   @override
@@ -81,7 +102,10 @@ class _DownloadPageState extends State<DownloadPage> {
               builder: (ctx, currentValue) {
                 return data.isEmpty && currentValue.isEmpty
                     ? Empty()
-                    : FilledDownload(data: data , dataDownload: currentValue);
+                    : FilledDownload(
+                        data: data,
+                        dataDownload: currentValue,
+                      );
               },
             ),
           ],
