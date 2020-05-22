@@ -1,8 +1,10 @@
 import 'dart:convert';
 
+import 'package:Samehadaku/pages/show_more_page.dart';
 import 'package:Samehadaku/setting.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:touchable_opacity/touchable_opacity.dart';
 import './../components/detail_header.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import 'package:http/http.dart' as http;
@@ -72,8 +74,14 @@ class _DetailAnimeState extends State<DetailAnime> {
                       width: width,
                       data: data['list_episode'],
                     ),
-                    Rekomendasi(width: width),
-                    LatestUpdate(width: width)
+                    Rekomendasi(
+                      width: width,
+                      data: data['recommend'],
+                    ),
+                    LatestUpdate(
+                      width: width,
+                      data: data['latest'].sublist(0, 5)..shuffle(),
+                    )
                   ],
                 ),
               ),
@@ -83,12 +91,11 @@ class _DetailAnimeState extends State<DetailAnime> {
 }
 
 class LatestUpdate extends StatelessWidget {
-  const LatestUpdate({
-    Key key,
-    @required this.width,
-  }) : super(key: key);
+  const LatestUpdate({Key key, @required this.width, this.data})
+      : super(key: key);
 
   final double width;
+  final List data;
 
   @override
   Widget build(BuildContext context) {
@@ -122,22 +129,25 @@ class LatestUpdate extends StatelessWidget {
                     color: Color(0xFF2F2F2F),
                   ),
                 ),
-                Container(
-                  child: Row(
-                    children: <Widget>[
-                      Text(
-                        'Show More',
-                        style: GoogleFonts.poppins(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w300,
-                          color: Colors.black.withOpacity(.61),
+                TouchableOpacity(
+                  activeOpacity: .7,
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ShowMorePage()));
+                  },
+                  child: Container(
+                    child: Row(
+                      children: <Widget>[
+                        Text(
+                          'Show more',
+                          style: Theme.of(context).textTheme.headline2,
+                          textAlign: TextAlign.left,
                         ),
-                      ),
-                      Icon(
-                        Icons.chevron_right,
-                        size: 21,
-                      ),
-                    ],
+                        Icon(Icons.chevron_right)
+                      ],
+                    ),
                   ),
                 ),
               ],
@@ -146,12 +156,13 @@ class LatestUpdate extends StatelessWidget {
           SizedBox(height: 16),
           Expanded(
             child: ListView.builder(
-              itemCount: 3,
+              itemCount: data.length,
               scrollDirection: Axis.horizontal,
               itemBuilder: (ctx, idx) => Container(
                 width: width * .5,
                 height: width,
-                margin: EdgeInsets.only(left: 16, right: idx == 2 ? 16 : 0),
+                margin: EdgeInsets.only(
+                    left: 16, right: idx == data.length - 1 ? 16 : 0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
@@ -159,7 +170,7 @@ class LatestUpdate extends StatelessWidget {
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(8),
                         child: Image.network(
-                          'https://i0.wp.com/samehadaku.vip/wp-content/uploads/2020/04/106370.jpg?quality=80&resize=150,210',
+                          data[idx]['image'],
                           fit: BoxFit.cover,
                           width: width * .5,
                         ),
@@ -167,18 +178,22 @@ class LatestUpdate extends StatelessWidget {
                     ),
                     SizedBox(height: 5),
                     Text(
-                      '/Blush-DC: Himitsu',
+                      data[idx]['title'],
                       style: GoogleFonts.poppins(
                         fontSize: 14,
                         color: Colors.black.withOpacity(.85),
                       ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
                     Text(
-                      'Sports, Comedy',
+                      data[idx]['genre'].sublist(0, 2).join(', '),
                       style: GoogleFonts.poppins(
                         fontSize: 12,
                         color: Colors.black.withOpacity(.53),
                       ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     )
                   ],
                 ),
@@ -214,12 +229,11 @@ class LatestUpdate extends StatelessWidget {
 }
 
 class Rekomendasi extends StatelessWidget {
-  const Rekomendasi({
-    Key key,
-    @required this.width,
-  }) : super(key: key);
+  const Rekomendasi({Key key, @required this.width, this.data})
+      : super(key: key);
 
   final double width;
+  final List data;
 
   @override
   Widget build(BuildContext context) {
@@ -255,12 +269,13 @@ class Rekomendasi extends StatelessWidget {
           SizedBox(height: 16),
           Expanded(
             child: ListView.builder(
-              itemCount: 3,
+              itemCount: data.length,
               scrollDirection: Axis.horizontal,
               itemBuilder: (ctx, idx) => Container(
                 width: width * .5,
                 height: width,
-                margin: EdgeInsets.only(left: 16, right: idx == 2 ? 16 : 0),
+                margin: EdgeInsets.only(
+                    left: 16, right: idx == data.length - 1 ? 16 : 0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
@@ -268,7 +283,7 @@ class Rekomendasi extends StatelessWidget {
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(8),
                         child: Image.network(
-                          'https://i0.wp.com/samehadaku.vip/wp-content/uploads/2020/04/106370.jpg?quality=80&resize=150,210',
+                          data[idx]['image'],
                           fit: BoxFit.cover,
                           width: width * .5,
                         ),
@@ -276,14 +291,16 @@ class Rekomendasi extends StatelessWidget {
                     ),
                     SizedBox(height: 5),
                     Text(
-                      '/Blush-DC: Himitsu',
+                      data[idx]['title'],
                       style: GoogleFonts.poppins(
                         fontSize: 14,
                         color: Colors.black.withOpacity(.85),
                       ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
                     Text(
-                      'Sports, Comedy',
+                      data[idx]['genre'].sublist(0, 2).join(', '),
                       style: GoogleFonts.poppins(
                         fontSize: 12,
                         color: Colors.black.withOpacity(.53),

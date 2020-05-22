@@ -4,15 +4,12 @@ import 'package:Samehadaku/bloc/download_bloc.dart';
 import 'package:filesize/filesize.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
-import 'package:thumbnails/thumbnails.dart';
 
 class FilledDownload extends StatefulWidget {
-  final List<Map> data;
-  final List<dynamic> dataDownload;
+  final List data,dataDownload;
 
-  FilledDownload({this.data = const [], this.dataDownload});
+  FilledDownload({this.data = const [], this.dataDownload = const []});
 
   @override
   _FilledDownloadState createState() => _FilledDownloadState();

@@ -53,10 +53,11 @@ class _ShowMorePageState extends State<ShowMorePage> {
         var url = 'https://samehadaku-rest-api.herokuapp.com/page/$_page';
         var response = json.decode((await http.get(url)).body);
 
-        setState(() {
-          _showLoading = false;
-          _data.addAll(response['latest']);
-        });
+        if (this.mounted)
+          setState(() {
+            _showLoading = false;
+            _data.addAll(response['latest']);
+          });
       });
     });
   }

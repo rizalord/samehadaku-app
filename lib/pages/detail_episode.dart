@@ -1,36 +1,74 @@
+import 'dart:convert';
+
 import 'package:Samehadaku/pages/browser.dart';
+import 'package:Samehadaku/setting.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:touchable_opacity/touchable_opacity.dart';
 import './../components/detail_header.dart';
+import 'package:http/http.dart' as http;
 
-class DetailEpisode extends StatelessWidget {
+class DetailEpisode extends StatefulWidget {
+  final String link, image;
+
+  DetailEpisode({this.link, this.image});
+
+  @override
+  _DetailEpisodeState createState() => _DetailEpisodeState();
+}
+
+class _DetailEpisodeState extends State<DetailEpisode> {
+  Map data;
+
+  @override
+  void initState() {
+    initData();
+    super.initState();
+  }
+
+  initData() async {
+    var id = widget.link.replaceAll('https://samehadaku.vip/', '');
+    var url = Setting().restendpoint + 'anime/eps/$id';
+    var response = json.decode((await http.get(url)).body);
+
+    setState(() {
+      data = response;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
-    String title =
-        'Kaguya-sama wa Kokurasetai?: Tensai-tachi no Renai Zunousen Episode 4 Subtitle Indonesia';
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            children: <Widget>[
-              Header(width: width),
-              SizedBox(height: 10),
-              TextTitle(width: width, title: title),
-              Divider(width: width),
-              Thumbnail(width: width),
-              TextEpisode(),
-              Poster(width: width),
-              PrevAllNext(width: width),
-              AllEpisode(width: width , title: title),
-              Recomendation(width: width)
-            ],
-          ),
-        ),
+        child: data == null
+            ? Center(child: CircularProgressIndicator())
+            : SingleChildScrollView(
+                child: Column(
+                  children: <Widget>[
+                    Header(width: width),
+                    SizedBox(height: 10),
+                    TextTitle(width: width, title: data['title']),
+                    Divider(width: width),
+                    Thumbnail(width: width, image: widget.image),
+                    TextEpisode(eps: data['eps']),
+                    Poster(
+                        width: width,
+                        uploader: data['uploader'],
+                        date: data['date_uploaded']),
+                    PrevAllNext(width: width),
+                    AllEpisode(
+                        width: width,
+                        title: data['title'],
+                        data: data['downloadEps']),
+                    Recomendation(
+                        width: width, data: data['recommend'].sublist(0, 2))
+                  ],
+                ),
+              ),
       ),
     );
   }
@@ -40,9 +78,11 @@ class Recomendation extends StatelessWidget {
   const Recomendation({
     Key key,
     @required this.width,
+    this.data,
   }) : super(key: key);
 
   final double width;
+  final List data;
 
   @override
   Widget build(BuildContext context) {
@@ -68,20 +108,14 @@ class Recomendation extends StatelessWidget {
           SizedBox(height: 15),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Image.network(
-                'https://i0.wp.com/samehadaku.vip/wp-content/uploads/2020/04/106229.jpg?quality=100',
-                width: width * .44,
-                height: width * .57,
-                fit: BoxFit.cover,
-              ),
-              Image.network(
-                'https://i0.wp.com/samehadaku.vip/wp-content/uploads/2020/04/106229.jpg?quality=100',
-                width: width * .44,
-                height: width * .57,
-                fit: BoxFit.cover,
-              ),
-            ],
+            children: data
+                .map((e) => Image.network(
+                      e['image'],
+                      width: width * .44,
+                      height: width * .57,
+                      fit: BoxFit.cover,
+                    ))
+                .toList(),
           ),
           SizedBox(height: 30),
           Center(
@@ -109,14 +143,12 @@ class Recomendation extends StatelessWidget {
 }
 
 class AllEpisode extends StatelessWidget {
-  const AllEpisode({
-    Key key,
-    @required this.width,
-    this.title
-  }) : super(key: key);
+  const AllEpisode({Key key, @required this.width, this.title, this.data})
+      : super(key: key);
 
   final double width;
   final String title;
+  final List data;
 
   @override
   Widget build(BuildContext context) {
@@ -134,11 +166,15 @@ class AllEpisode extends StatelessWidget {
       ]),
       // MKV , MP4 , x265
       child: Column(
-        children: <Widget>[
-          SingleFormat(width: width , title: title),
-          SingleFormat(width: width , title: title),
-          SingleFormat(width: width , title: title),
-        ],
+        children: data
+            .map(
+              (e) => SingleFormat(
+                  width: width,
+                  title: title,
+                  format: e['format'],
+                  data: e['data']),
+            )
+            .toList(),
       ),
     );
   }
@@ -148,11 +184,14 @@ class SingleFormat extends StatelessWidget {
   const SingleFormat({
     Key key,
     @required this.width,
-    this.title
+    this.title,
+    this.format,
+    this.data,
   }) : super(key: key);
 
   final double width;
-  final String title;
+  final String title, format;
+  final List data;
 
   @override
   Widget build(BuildContext context) {
@@ -163,32 +202,63 @@ class SingleFormat extends StatelessWidget {
           Container(
             margin: EdgeInsets.only(bottom: 12, top: 18),
             child: Text(
-              'MKV',
+              format,
               style: GoogleFonts.poppins(
                   fontSize: 16,
                   fontWeight: FontWeight.w500,
                   color: Colors.black),
             ),
           ),
-          SingleQuality(width: width , title: title),
-          SingleQuality(width: width , title: title),
-          SingleQuality(width: width , title: title),
-          SingleQuality(width: width , title: title),
-        ],
+          // SingleQuality(width: width, title: title),
+          // SingleQuality(width: width, title: title),
+          // SingleQuality(width: width, title: title),
+          // SingleQuality(width: width, title: title),
+        ]..addAll(data
+            .map(
+              (e) => SingleQuality(
+                  width: width,
+                  title: title,
+                  quality: e['quality'],
+                  link: e['link']),
+            )
+            .toList()),
       ),
     );
   }
 }
 
-class SingleQuality extends StatelessWidget {
-  const SingleQuality({
-    Key key,
-    @required this.width,
-    this.title
-  }) : super(key: key);
+class SingleQuality extends StatefulWidget {
+  const SingleQuality(
+      {Key key, @required this.width, this.title, this.quality, this.link})
+      : super(key: key);
 
   final double width;
-  final String title;
+  final String title, quality;
+  final Map link;
+
+  @override
+  _SingleQualityState createState() => _SingleQualityState();
+}
+
+class _SingleQualityState extends State<SingleQuality> {
+  List data = [];
+
+  @override
+  void initState() {
+    convertLink();
+    super.initState();
+  }
+
+  convertLink() {
+    setState(() {
+      widget.link.forEach((key, value) {
+        data.add({
+          'key': key == 'zippyshare' ? 'ZS' : key == 'gdrive' ? 'GD' : 'RU',
+          'value': value
+        });
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -197,12 +267,12 @@ class SingleQuality extends StatelessWidget {
       child: Row(
         children: <Widget>[
           Container(
-            width: width * .27,
+            width: widget.width * .27,
             height: 40,
             color: Colors.lightBlue,
             alignment: Alignment.center,
             child: Text(
-              '360P',
+              widget.quality,
               style: GoogleFonts.poppins(
                 fontSize: 15,
                 fontWeight: FontWeight.w500,
@@ -210,62 +280,41 @@ class SingleQuality extends StatelessWidget {
               ),
             ),
           ),
-          TouchableOpacity(
-            activeOpacity: .7,
-            onTap: () {
-              Navigator.push(
-                context,
-                PageTransition(
-                  type: PageTransitionType.rightToLeft,
-                  alignment: Alignment.bottomCenter,
-                  child: Browser(title: title),
+        ]..addAll(data
+            .map(
+              (e) => TouchableOpacity(
+                activeOpacity: .7,
+                onTap: () {
+                  if (e['key'] == 'ZS')
+                    Navigator.push(
+                      context,
+                      PageTransition(
+                        type: PageTransitionType.rightToLeft,
+                        alignment: Alignment.bottomCenter,
+                        child: Browser(title: widget.title, url: e['value']),
+                      ),
+                    );
+                },
+                child: Container(
+                  width: (widget.width * .21),
+                  height: 40,
+                  color: Color(0xFFEFEFEF),
+                  alignment: Alignment.center,
+                  child: Text(
+                    e['key'],
+                    style: GoogleFonts.poppins(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w500,
+                      color: e['key'] == 'ZS' ? Colors.lightBlue : Colors.black,
+                      decoration: e['key'] == 'ZS'
+                          ? TextDecoration.none
+                          : TextDecoration.lineThrough,
+                    ),
+                  ),
                 ),
-              );
-            },
-            child: Container(
-              width: (width * .21),
-              height: 40,
-              color: Color(0xFFEFEFEF),
-              alignment: Alignment.center,
-              child: Text(
-                'ZS',
-                style: GoogleFonts.poppins(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.lightBlue,
-                ),
               ),
-            ),
-          ),
-          Container(
-            width: (width * .21),
-            height: 40,
-            color: Color(0xFFEFEFEF),
-            alignment: Alignment.center,
-            child: Text(
-              'GD',
-              style: GoogleFonts.poppins(
-                fontSize: 15,
-                fontWeight: FontWeight.w500,
-                color: Colors.lightBlue,
-              ),
-            ),
-          ),
-          Container(
-            width: (width * .21),
-            height: 40,
-            color: Color(0xFFEFEFEF),
-            alignment: Alignment.center,
-            child: Text(
-              'RU',
-              style: GoogleFonts.poppins(
-                fontSize: 15,
-                fontWeight: FontWeight.w500,
-                color: Colors.lightBlue,
-              ),
-            ),
-          ),
-        ],
+            )
+            .toList()),
       ),
     );
   }
@@ -317,19 +366,18 @@ class PrevAllNext extends StatelessWidget {
 }
 
 class Poster extends StatelessWidget {
-  const Poster({
-    Key key,
-    @required this.width,
-  }) : super(key: key);
+  const Poster({Key key, @required this.width, this.uploader, this.date})
+      : super(key: key);
 
   final double width;
+  final String uploader, date;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: width * .1, vertical: 10),
       child: Text(
-        'Diposting oleh ktyg - 19 jam yang lalu',
+        'Diposting oleh $uploader - $date',
         style: GoogleFonts.roboto(
           fontSize: 14,
           color: Color(0xFF666666),
@@ -343,9 +391,11 @@ class Thumbnail extends StatelessWidget {
   const Thumbnail({
     Key key,
     @required this.width,
+    this.image,
   }) : super(key: key);
 
   final double width;
+  final String image;
 
   @override
   Widget build(BuildContext context) {
@@ -358,7 +408,7 @@ class Thumbnail extends StatelessWidget {
         border: Border.all(color: Colors.lightBlue, width: 1),
       ),
       child: Image.network(
-        'https://i0.wp.com/samehadaku.vip/wp-content/uploads/2020/05/2020-05-10_00-42-44.jpg?quality=100',
+        image,
         fit: BoxFit.cover,
       ),
     );
@@ -368,7 +418,10 @@ class Thumbnail extends StatelessWidget {
 class TextEpisode extends StatelessWidget {
   const TextEpisode({
     Key key,
+    this.eps,
   }) : super(key: key);
+
+  final String eps;
 
   @override
   Widget build(BuildContext context) {
@@ -381,7 +434,7 @@ class TextEpisode extends StatelessWidget {
               color: Theme.of(context).textSelectionColor.withOpacity(.5)),
           SizedBox(width: 5),
           Text(
-            'Episode 4',
+            'Episode $eps',
             style: GoogleFonts.roboto(
               fontSize: 16,
               color: Theme.of(context).textSelectionColor.withOpacity(.5),

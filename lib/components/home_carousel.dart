@@ -66,6 +66,8 @@ class _CarouselState extends State<Carousel> {
                             child: CarouselSingle(
                               title: e['title'],
                               image: e['image'],
+                              genre: e['genre'].join(', '),
+                              sinopsis: e['sinopsis']
                             ),
                           );
                         },
@@ -131,9 +133,9 @@ class DotsBottom extends StatelessWidget {
 }
 
 class CarouselSingle extends StatelessWidget {
-  const CarouselSingle({Key key, this.title, this.image}) : super(key: key);
+  const CarouselSingle({Key key, this.title, this.image,this.genre, this.sinopsis}) : super(key: key);
 
-  final String title, image;
+  final String title, image,sinopsis,genre;
 
   @override
   Widget build(BuildContext context) {
@@ -191,7 +193,7 @@ class CarouselSingle extends StatelessWidget {
                               overflow: TextOverflow.ellipsis,
                             ),
                             Text(
-                              'School, Romance, Comedy',
+                              genre,
                               style: GoogleFonts.poppins(
                                 fontSize: 12,
                                 fontWeight: FontWeight.w500,
@@ -216,7 +218,7 @@ class CarouselSingle extends StatelessWidget {
                             Container(
                               margin: EdgeInsets.only(top: 3),
                               child: Text(
-                                'Menceritakan tentang dua murid elit, Kaguya Shinomiya dan Miyuki Shirogane. Keduanya menyukai satu sama lain dan mereka ',
+                                sinopsis,
                                 style: GoogleFonts.poppins(
                                   fontSize: 11,
                                   fontWeight: FontWeight.w300,

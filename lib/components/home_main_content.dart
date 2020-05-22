@@ -6,11 +6,9 @@ import 'package:page_transition/page_transition.dart';
 import 'package:touchable_opacity/touchable_opacity.dart';
 
 class MainContent extends StatelessWidget {
-
   final List data;
 
   MainContent({this.data});
-
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +48,10 @@ class MainContent extends StatelessWidget {
                   context,
                   PageTransition(
                     type: PageTransitionType.fade,
-                    child: DetailEpisode(),
+                    child: DetailEpisode(
+                      link: data[idx]['link'],
+                      image: data[idx]['image'],
+                    ),
                   ),
                 );
               },
@@ -68,7 +69,6 @@ class MainContent extends StatelessWidget {
     );
   }
 }
-
 
 class SubHeader extends StatelessWidget {
   const SubHeader({
