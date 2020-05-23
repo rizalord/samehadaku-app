@@ -1,41 +1,76 @@
+import 'dart:convert';
+
+import 'package:Samehadaku/setting.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import './../components/season_header.dart';
+import 'package:http/http.dart' as http;
 
-class Season extends StatelessWidget {
+class Season extends StatefulWidget {
+  @override
+  _SeasonState createState() => _SeasonState();
+}
+
+class _SeasonState extends State<Season> {
+  List data;
+
+  @override
+  void initState() {
+    initData();
+    super.initState();
+  }
+
+  initData() async {
+    var url = Setting().restendpoint + 'season';
+
+    var response = json.decode((await http.get(url)).body);
+
+    if (this.mounted) {
+      setState(() {
+        data = response['results'];
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
 
-    /*24 is for notification bar on Android*/
     final double itemHeight = (size.height - kToolbarHeight - 24) / 2;
     final double itemWidth = size.width / 2;
 
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Column(
-          children: <Widget>[
-            Header(),
-            SizedBox(height: 24),
-            GridView.count(
-              physics: NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              crossAxisCount: 2,
-              childAspectRatio: (itemWidth / itemHeight),
-              padding: EdgeInsets.symmetric(horizontal: 12),
-              crossAxisSpacing: 10,
-              mainAxisSpacing: 15,
-              children: <Widget>[
-                GridSingleItem(itemHeight: itemHeight),
-                GridSingleItem(itemHeight: itemHeight),
-                GridSingleItem(itemHeight: itemHeight),
-                GridSingleItem(itemHeight: itemHeight),
-              ],
+      body: data == null
+          ? Center(child: CircularProgressIndicator())
+          : SingleChildScrollView(
+              child: Column(
+                children: <Widget>[
+                  Header(),
+                  SizedBox(height: 24),
+                  GridView.count(
+                    physics: NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    crossAxisCount: 2,
+                    childAspectRatio: (itemWidth / itemHeight),
+                    padding: EdgeInsets.symmetric(horizontal: 12),
+                    crossAxisSpacing: 10,
+                    mainAxisSpacing: 15,
+                    children: data
+                        .map(
+                          (element) => GridSingleItem(
+                            itemHeight: itemHeight,
+                            image: element['image'],
+                            title: element['title'],
+                            score: element['score'],
+                            status: element['status'],
+                          ),
+                        )
+                        .toList(),
+                  ),
+                  SizedBox(height: 24),
+                ],
+              ),
             ),
-            SizedBox(height: 24),
-          ],
-        ),
-      ),
     );
   }
 }
@@ -44,9 +79,14 @@ class GridSingleItem extends StatelessWidget {
   const GridSingleItem({
     Key key,
     @required this.itemHeight,
+    this.image,
+    this.title,
+    this.score,
+    this.status,
   }) : super(key: key);
 
   final double itemHeight;
+  final String image, title, score, status;
 
   @override
   Widget build(BuildContext context) {
@@ -54,9 +94,13 @@ class GridSingleItem extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          ImageSeason(itemHeight: itemHeight),
+          ImageSeason(
+            itemHeight: itemHeight,
+            image: image,
+            score: score,
+          ),
           Text(
-            'Hachi-nan tte, Sore wa naidesu',
+            title,
             style: GoogleFonts.roboto(
               fontSize: 16,
             ),
@@ -65,7 +109,7 @@ class GridSingleItem extends StatelessWidget {
           ),
           SizedBox(height: 3),
           Text(
-            'Ongoing',
+            status,
             style: GoogleFonts.roboto(
               fontSize: 15,
               color: Theme.of(context).textSelectionColor.withOpacity(.46),
@@ -80,12 +124,12 @@ class GridSingleItem extends StatelessWidget {
 }
 
 class ImageSeason extends StatelessWidget {
-  const ImageSeason({
-    Key key,
-    @required this.itemHeight,
-  }) : super(key: key);
+  const ImageSeason(
+      {Key key, @required this.itemHeight, this.image, this.score})
+      : super(key: key);
 
   final double itemHeight;
+  final String image, score;
 
   @override
   Widget build(BuildContext context) {
@@ -97,7 +141,7 @@ class ImageSeason extends StatelessWidget {
       child: Stack(
         children: <Widget>[
           Image.network(
-            'https://i0.wp.com/samehadaku.vip/wp-content/uploads/2020/05/106945.jpg?quality=100',
+            image,
             fit: BoxFit.cover,
             height: itemHeight / 1.38,
             width: 200,
@@ -142,7 +186,7 @@ class ImageSeason extends StatelessWidget {
                     size: 18,
                   ),
                   Text(
-                    '6.50',
+                    score == null || score == '' ? '' : score,
                     style: GoogleFonts.roboto(
                       fontSize: 16,
                       color: Colors.white,

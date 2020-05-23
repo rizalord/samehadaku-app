@@ -31,10 +31,11 @@ class _DetailEpisodeState extends State<DetailEpisode> {
     var id = widget.link.replaceAll('https://samehadaku.vip/', '');
     var url = Setting().restendpoint + 'anime/eps/$id';
     var response = json.decode((await http.get(url)).body);
-
-    setState(() {
-      data = response;
-    });
+  
+    if (this.mounted)
+      setState(() {
+        data = response;
+      });
   }
 
   @override
@@ -53,13 +54,15 @@ class _DetailEpisodeState extends State<DetailEpisode> {
                     SizedBox(height: 10),
                     TextTitle(width: width, title: data['title']),
                     Divider(width: width),
-                    Thumbnail(width: width, image: widget.image),
+                    widget.image != null
+                        ? Thumbnail(width: width, image: widget.image)
+                        : Container(),
                     TextEpisode(eps: data['eps']),
                     Poster(
                         width: width,
                         uploader: data['uploader'],
                         date: data['date_uploaded']),
-                    PrevAllNext(width: width),
+                    // PrevAllNext(width: width),
                     AllEpisode(
                         width: width,
                         title: data['title'],

@@ -1,9 +1,11 @@
 import 'dart:convert';
 
+import 'package:Samehadaku/pages/detail_episode.dart';
 import 'package:Samehadaku/pages/show_more_page.dart';
 import 'package:Samehadaku/setting.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:touchable_opacity/touchable_opacity.dart';
 import './../components/detail_header.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
@@ -361,7 +363,9 @@ class EpisodeList extends StatelessWidget {
                         width: width,
                         number: e['episode'],
                         title: e['title'],
-                        date: e['date_uploaded']))
+                        date: e['date_uploaded'],
+                        id: e['id'],
+                        link: e['link']))
                     .toList()),
           )
         ],
@@ -371,65 +375,81 @@ class EpisodeList extends StatelessWidget {
 }
 
 class SingleLink extends StatelessWidget {
-  const SingleLink({
-    Key key,
-    @required this.width,
-    this.number,
-    this.title,
-    this.date,
-  }) : super(key: key);
+  const SingleLink(
+      {Key key,
+      @required this.width,
+      this.number,
+      this.title,
+      this.date,
+      this.id,
+      this.link})
+      : super(key: key);
 
   final double width;
-  final String number, title, date;
+  final String number, title, date, id, link;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: width,
-      margin: EdgeInsets.only(bottom: 8),
-      height: 45,
-      child: Row(
-        children: <Widget>[
-          Container(
-            width: 45,
-            height: 45,
-            color: Colors.lightBlue,
-            alignment: Alignment.center,
-            child: Text(
-              number,
-              style: GoogleFonts.poppins(
-                fontSize: 17,
-                color: Colors.white,
-              ),
+    return TouchableOpacity(
+      activeOpacity: .9,
+      onTap: () {
+        Navigator.push(
+          context,
+          PageTransition(
+            type: PageTransitionType.fade,
+            child: DetailEpisode(
+              link: link,
             ),
           ),
-          SizedBox(width: 8),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: <Widget>[
-                Text(
-                  title,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: GoogleFonts.poppins(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w500,
-                    color: Color(0xFF535353).withOpacity(.83),
-                  ),
+        );
+      },
+      child: Container(
+        width: width,
+        margin: EdgeInsets.only(bottom: 8),
+        height: 45,
+        child: Row(
+          children: <Widget>[
+            Container(
+              width: 45,
+              height: 45,
+              color: Colors.lightBlue,
+              alignment: Alignment.center,
+              child: Text(
+                number,
+                style: GoogleFonts.poppins(
+                  fontSize: 17,
+                  color: Colors.white,
                 ),
-                Text(
-                  date,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: GoogleFonts.poppins(
-                      fontSize: 13, color: Colors.black.withOpacity(.34)),
-                ),
-              ],
+              ),
             ),
-          )
-        ],
+            SizedBox(width: 8),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: <Widget>[
+                  Text(
+                    title,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: GoogleFonts.poppins(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w500,
+                      color: Color(0xFF535353).withOpacity(.83),
+                    ),
+                  ),
+                  Text(
+                    date,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: GoogleFonts.poppins(
+                        fontSize: 13, color: Colors.black.withOpacity(.34)),
+                  ),
+                ],
+              ),
+            )
+          ],
+        ),
       ),
     );
   }

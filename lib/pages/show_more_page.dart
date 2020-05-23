@@ -80,7 +80,10 @@ class _ShowMorePageState extends State<ShowMorePage> {
                           context,
                           PageTransition(
                             type: PageTransitionType.fade,
-                            child: DetailEpisode(),
+                            child: DetailEpisode(
+                              link: _data[idx]['link'],
+                      image: _data[idx]['image'],
+                            ),
                           ),
                         );
                       },
