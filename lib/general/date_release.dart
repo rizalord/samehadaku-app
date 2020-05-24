@@ -1,7 +1,39 @@
+import 'dart:convert';
+import 'package:Samehadaku/pages/detail_anime.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart' as http;
+import 'package:page_transition/page_transition.dart';
+import 'package:touchable_opacity/touchable_opacity.dart';
+import '../setting.dart';
 
-class DateRelease extends StatelessWidget {
+class DateRelease extends StatefulWidget {
+  @override
+  _DateReleaseState createState() => _DateReleaseState();
+}
+
+class _DateReleaseState extends State<DateRelease>
+    with AutomaticKeepAliveClientMixin {
+  List data;
+
+  @override
+  void initState() {
+    initData();
+    super.initState();
+  }
+
+  initData() async {
+    var url = Setting().restendpoint + 'date-release';
+
+    var response = json.decode((await http.get(url)).body);
+
+    if (this.mounted) {
+      setState(() {
+        data = response['results'];
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
@@ -10,28 +42,39 @@ class DateRelease extends StatelessWidget {
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Stack(
         children: <Widget>[
-          Positioned.fill(
-            child: SingleChildScrollView(
-              child: Column(
-                children: <Widget>[
-                  SizedBox(height: 65),
-                  SingleItem(),
-                  SingleItem(),
-                ],
-              ),
-            ),
-          ),
+          data == null
+              ? Center(child: CircularProgressIndicator())
+              : Positioned.fill(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: <Widget>[
+                        SizedBox(height: 65),
+                      ]..addAll(
+                          data
+                              .map(
+                                (e) =>
+                                    SingleItem(day: e['day'], data: e['list']),
+                              )
+                              .toList(),
+                        ),
+                    ),
+                  ),
+                ),
           Header(width: width)
         ],
       ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
 
 class SingleItem extends StatelessWidget {
-  const SingleItem({
-    Key key,
-  }) : super(key: key);
+  const SingleItem({Key key, this.day, this.data}) : super(key: key);
+
+  final String day;
+  final List data;
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +100,7 @@ class SingleItem extends StatelessWidget {
             color: Color(0xFFF2F2F2),
             alignment: Alignment.center,
             child: Text(
-              'Rabu',
+              day,
               style: GoogleFonts.roboto(fontSize: 16, color: Color(0xFF333333)),
             ),
           ),
@@ -68,11 +111,17 @@ class SingleItem extends StatelessWidget {
             alignment: WrapAlignment.start,
             crossAxisAlignment: WrapCrossAlignment.start,
             runAlignment: WrapAlignment.start,
-            children: <Widget>[
-              SingleItemsWrap(width: width),
-              SingleItemsWrap(width: width),
-              SingleItemsWrap(width: width),
-            ],
+            children: data
+                .map(
+                  (e) => SingleItemsWrap(
+                      width: width,
+                      image: e['image'],
+                      title: e['title'],
+                      genres: e['genres'],
+                      score: e['score'],
+                      id: e['linkId']),
+                )
+                .toList(),
           )
         ],
       ),
@@ -81,65 +130,88 @@ class SingleItem extends StatelessWidget {
 }
 
 class SingleItemsWrap extends StatelessWidget {
-  const SingleItemsWrap({
-    Key key,
-    @required this.width,
-  }) : super(key: key);
+  const SingleItemsWrap(
+      {Key key,
+      @required this.width,
+      this.image,
+      this.title,
+      this.genres,
+      this.score,
+      this.id})
+      : super(key: key);
 
   final double width;
+  final String image, title, score, id;
+  final List genres;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: width / 2 - (12 * 2) - 5,
-      decoration: BoxDecoration(
-          // color: Colors.grey,
+    return TouchableOpacity(
+      activeOpacity: 0.8,
+      onTap: () {
+        Navigator.push(
+          context,
+          PageTransition(
+            type: PageTransitionType.fade,
+            child: DetailAnime(url: id),
           ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          ImageRelease(width: width),
-          Text(
-            'Hachi-nan tte, Sore wa naidesu',
-            style: GoogleFonts.roboto(
-              fontSize: 16,
-              color: Colors.black,
+        );
+      },
+      child: Container(
+        width: width / 2 - (12 * 2) - 5,
+        decoration: BoxDecoration(
+            // color: Colors.grey,
             ),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-          SizedBox(height: 3),
-          Text(
-            'School, Sports',
-            style: GoogleFonts.roboto(
-              fontSize: 15,
-              color: Colors.black.withOpacity(.46),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            ImageRelease(
+              width: width,
+              image: image,
+              score: score,
             ),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-          SizedBox(height: 8),
-          Container(
-            height: 32,
-            width: width / 2 - (12 * 2) - 5,
-            color: Color(0xFFF1F1F1),
-            alignment: Alignment.center,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Icon(Icons.play_arrow, size: 20, color: Color(0xFF888888)),
-                SizedBox(width: 2),
-                Text(
-                  'Update',
-                  style: GoogleFonts.roboto(
-                    fontSize: 14,
-                    color: Color(0xFF888888),
-                  ),
-                )
-              ],
+            Text(
+              title,
+              style: GoogleFonts.roboto(
+                fontSize: 16,
+                color: Colors.black,
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
-          )
-        ],
+            SizedBox(height: 3),
+            Text(
+              genres.sublist(0, 2).join(', '),
+              style: GoogleFonts.roboto(
+                fontSize: 15,
+                color: Colors.black.withOpacity(.46),
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+            SizedBox(height: 8),
+            Container(
+              height: 32,
+              width: width / 2 - (12 * 2) - 5,
+              color: Color(0xFFF1F1F1),
+              alignment: Alignment.center,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Icon(Icons.play_arrow, size: 20, color: Color(0xFF888888)),
+                  SizedBox(width: 2),
+                  Text(
+                    'Update',
+                    style: GoogleFonts.roboto(
+                      fontSize: 14,
+                      color: Color(0xFF888888),
+                    ),
+                  )
+                ],
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
@@ -149,9 +221,12 @@ class ImageRelease extends StatelessWidget {
   const ImageRelease({
     Key key,
     @required this.width,
+    this.image,
+    this.score,
   }) : super(key: key);
 
   final double width;
+  final String image, score;
 
   @override
   Widget build(BuildContext context) {
@@ -160,7 +235,7 @@ class ImageRelease extends StatelessWidget {
       child: Stack(
         children: <Widget>[
           Image.network(
-            'https://i0.wp.com/samehadaku.vip/wp-content/uploads/2020/05/103429.jpg?quality=100',
+            image,
             fit: BoxFit.cover,
             height: width / 2.8,
             width: width / 2 - (12 * 2) - 5,
@@ -205,7 +280,7 @@ class ImageRelease extends StatelessWidget {
                     size: 18,
                   ),
                   Text(
-                    '6.50',
+                    score,
                     style: GoogleFonts.roboto(
                       fontSize: 16,
                       color: Colors.white,

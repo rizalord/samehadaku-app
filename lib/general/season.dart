@@ -1,8 +1,11 @@
 import 'dart:convert';
 
+import 'package:Samehadaku/pages/detail_anime.dart';
 import 'package:Samehadaku/setting.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:page_transition/page_transition.dart';
+import 'package:touchable_opacity/touchable_opacity.dart';
 import './../components/season_header.dart';
 import 'package:http/http.dart' as http;
 
@@ -11,7 +14,7 @@ class Season extends StatefulWidget {
   _SeasonState createState() => _SeasonState();
 }
 
-class _SeasonState extends State<Season> {
+class _SeasonState extends State<Season> with AutomaticKeepAliveClientMixin {
   List data;
 
   @override
@@ -58,12 +61,12 @@ class _SeasonState extends State<Season> {
                     children: data
                         .map(
                           (element) => GridSingleItem(
-                            itemHeight: itemHeight,
-                            image: element['image'],
-                            title: element['title'],
-                            score: element['score'],
-                            status: element['status'],
-                          ),
+                              itemHeight: itemHeight,
+                              image: element['image'],
+                              title: element['title'],
+                              score: element['score'],
+                              status: element['status'],
+                              id: element['linkId']),
                         )
                         .toList(),
                   ),
@@ -73,51 +76,67 @@ class _SeasonState extends State<Season> {
             ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
 
 class GridSingleItem extends StatelessWidget {
-  const GridSingleItem({
-    Key key,
-    @required this.itemHeight,
-    this.image,
-    this.title,
-    this.score,
-    this.status,
-  }) : super(key: key);
+  const GridSingleItem(
+      {Key key,
+      @required this.itemHeight,
+      this.image,
+      this.title,
+      this.score,
+      this.status,
+      this.id})
+      : super(key: key);
 
   final double itemHeight;
-  final String image, title, score, status;
+  final String image, title, score, status, id;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          ImageSeason(
-            itemHeight: itemHeight,
-            image: image,
-            score: score,
+    return TouchableOpacity(
+      onTap: () {
+        Navigator.push(
+          context,
+          PageTransition(
+            type: PageTransitionType.fade,
+            child: DetailAnime(url: id),
           ),
-          Text(
-            title,
-            style: GoogleFonts.roboto(
-              fontSize: 16,
+        );
+      },
+      activeOpacity: 0.75,
+      child: Container(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            ImageSeason(
+              itemHeight: itemHeight,
+              image: image,
+              score: score,
             ),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-          SizedBox(height: 3),
-          Text(
-            status,
-            style: GoogleFonts.roboto(
-              fontSize: 15,
-              color: Theme.of(context).textSelectionColor.withOpacity(.46),
+            Text(
+              title,
+              style: GoogleFonts.roboto(
+                fontSize: 16,
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ],
+            SizedBox(height: 3),
+            Text(
+              status,
+              style: GoogleFonts.roboto(
+                fontSize: 15,
+                color: Theme.of(context).textSelectionColor.withOpacity(.46),
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -30,7 +30,13 @@ class _DetailAnimeState extends State<DetailAnime> {
   }
 
   getData() async {
-    var url = '${Setting().restendpoint}anime/${widget.url}/';
+    var lurl = widget.url;
+    if (lurl.contains('%e2%98%86')) {
+      lurl = lurl.replaceAll('%e2%98%86', "☆");
+    }
+    var url = '${Setting().restendpoint}anime/$lurl/';
+
+    print(url);
 
     var response = json.decode((await http.get(url)).body);
 

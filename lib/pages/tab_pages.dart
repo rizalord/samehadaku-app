@@ -15,7 +15,7 @@ class TabPages extends StatefulWidget {
   _TabPagesState createState() => _TabPagesState();
 }
 
-class _TabPagesState extends State<TabPages> {
+class _TabPagesState extends State<TabPages> with AutomaticKeepAliveClientMixin {
   PageController _pageController;
   int index = 0;
 
@@ -82,4 +82,7 @@ class _TabPagesState extends State<TabPages> {
       ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
