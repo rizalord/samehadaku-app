@@ -1,10 +1,21 @@
+import 'dart:convert';
+
 import 'package:Samehadaku/pages/detail_blog.dart';
+import 'package:Samehadaku/setting.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:touchable_opacity/touchable_opacity.dart';
 import './../components/notif_header.dart';
+import 'package:http/http.dart' as http;
 
-class NotificationPage extends StatelessWidget {
+class NotificationPage extends StatefulWidget {
+  @override
+  _NotificationPageState createState() => _NotificationPageState();
+}
+
+class _NotificationPageState extends State<NotificationPage>
+    with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
@@ -25,9 +36,12 @@ class NotificationPage extends StatelessWidget {
       ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
 
-class ListItem extends StatelessWidget {
+class ListItem extends StatefulWidget {
   const ListItem({
     Key key,
     @required this.width,
@@ -36,22 +50,103 @@ class ListItem extends StatelessWidget {
   final double width;
 
   @override
+  _ListItemState createState() => _ListItemState();
+}
+
+class _ListItemState extends State<ListItem> {
+  ScrollController _controller = ScrollController();
+  List data;
+  int page = 1;
+
+  bool loading = false;
+
+  initData() async {
+    var url = Setting().restendpoint + 'blog/$page';
+
+    var response = json.decode((await http.get(url)).body);
+
+    if (this.mounted)
+      setState(() {
+        data = response['blog'];
+      });
+  }
+
+  @override
+  void initState() {
+    initData();
+    super.initState();
+    onBottomReached();
+  }
+
+  void onBottomReached() {
+    _controller.addListener(() {
+      if (_controller.position.atEdge && _controller.position.pixels != 0) {
+        loadMore();
+      }
+    });
+  }
+
+  loadMore() async {
+    page++;
+    setState(() {
+      loading = true;
+      Future.delayed(Duration(seconds: 0), () async {
+        var url = Setting().restendpoint + 'blog/$page';
+        var response = json.decode((await http.get(url)).body);
+
+        if (this.mounted)
+          setState(() {
+            loading = false;
+
+            data.addAll(response['blog']);
+          });
+      });
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Positioned.fill(
-      top: width * .2,
-      child: SingleChildScrollView(
-        child: Column(
-          children: <Widget>[
-            SingleItem(),
-            SingleItem(),
-            SingleItem(),
-            SingleItem(),
-            SingleItem(),
-            SingleItem(),
-          ],
-        ),
-      ),
-    );
+    return data == null
+        ? Center(child: CircularProgressIndicator())
+        : Positioned.fill(
+            top: widget.width * .2,
+            child: SingleChildScrollView(
+              controller: _controller,
+              child: Column(
+                children: data
+                    .map((e) => data.last != e
+                        ? SingleItem(
+                            image: e['image'],
+                            date: e['date'],
+                            title: e['title'],
+                            sub: e['sub'],
+                            id: e['linkId'])
+                        : Container(
+                            child: Column(
+                              children: [
+                                SingleItem(
+                                  image: e['image'],
+                                  date: e['date'],
+                                  title: e['title'],
+                                  sub: e['sub'],
+                                  id: e['linkId'],
+                                ),
+                                loading
+                                    ? Container(
+                                        margin: EdgeInsets.only(
+                                            top: 14, bottom: 16),
+                                        child: Center(
+                                          child: CircularProgressIndicator(),
+                                        ),
+                                      )
+                                    : Container(),
+                              ],
+                            ),
+                          ))
+                    .toList(),
+              ),
+            ),
+          );
   }
 }
 
@@ -72,9 +167,11 @@ class NotHeaderWrapper extends StatelessWidget {
 }
 
 class SingleItem extends StatelessWidget {
-  const SingleItem({
-    Key key,
-  }) : super(key: key);
+  const SingleItem(
+      {Key key, this.image, this.title, this.sub, this.date, this.id})
+      : super(key: key);
+
+  final String image, title, sub, date, id;
 
   @override
   Widget build(BuildContext context) {
@@ -83,7 +180,12 @@ class SingleItem extends StatelessWidget {
     return TouchableOpacity(
       activeOpacity: .6,
       onTap: () {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => DetailBlog()));
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => DetailBlog(id: id),
+          ),
+        );
       },
       child: Container(
         height: 108,
@@ -103,7 +205,7 @@ class SingleItem extends StatelessWidget {
         ),
         child: Row(
           children: <Widget>[
-            ImageItem(width: width),
+            ImageItem(width: width, image: image),
             SizedBox(width: 8),
             Expanded(
               child: Column(
@@ -111,7 +213,7 @@ class SingleItem extends StatelessWidget {
                 children: <Widget>[
                   SizedBox(height: 4),
                   Text(
-                    'Serial Novel Overlord akan tamat',
+                    title,
                     style: GoogleFonts.roboto(
                       fontSize: 15,
                       color: Colors.black.withOpacity(.64),
@@ -121,18 +223,19 @@ class SingleItem extends StatelessWidget {
                   ),
                   SizedBox(height: 7),
                   Text(
-                    'Serial Novel Overlord karya Kugane Maruyama akan berakhir',
+                    sub.trim(),
                     style: GoogleFonts.roboto(
-                        fontSize: 13,
-                        color: Colors.black.withOpacity(.71),
-                        fontWeight: FontWeight.w300,
-                        fontStyle: FontStyle.italic),
+                      fontSize: 13,
+                      color: Colors.black.withOpacity(.71),
+                      fontWeight: FontWeight.w300,
+                      fontStyle: FontStyle.italic,
+                    ),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
                   SizedBox(height: 7),
                   Text(
-                    '28 April 2020',
+                    date,
                     style: GoogleFonts.roboto(
                         fontSize: 12,
                         color: Colors.black.withOpacity(.42),
@@ -155,9 +258,11 @@ class ImageItem extends StatelessWidget {
   const ImageItem({
     Key key,
     @required this.width,
+    this.image,
   }) : super(key: key);
 
   final double width;
+  final String image;
 
   @override
   Widget build(BuildContext context) {
@@ -165,8 +270,10 @@ class ImageItem extends StatelessWidget {
       height: 84,
       width: width * .33,
       color: Colors.grey,
-      child: Image.network(
-        'https://i0.wp.com/samehadaku.vip/wp-content/uploads/2020/05/Bungo-to-alchemist-3.jpg?quality=80&resize=270,166',
+      child: CachedNetworkImage(
+        imageUrl: image,
+        placeholder: (context, url) =>
+            Center(child: CircularProgressIndicator()),
         fit: BoxFit.cover,
       ),
     );

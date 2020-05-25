@@ -8,6 +8,7 @@ class Header extends StatelessWidget {
   }) : super(key: key);
 
   final double width;
+  
 
   @override
   Widget build(BuildContext context) {

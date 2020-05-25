@@ -1,8 +1,40 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../setting.dart';
 import './../components/detail_header.dart';
+import 'package:http/http.dart' as http;
 
-class DetailBlog extends StatelessWidget {
+class DetailBlog extends StatefulWidget {
+  final String id;
+
+  DetailBlog({this.id});
+
+  @override
+  _DetailBlogState createState() => _DetailBlogState();
+}
+
+class _DetailBlogState extends State<DetailBlog> {
+  Map data;
+
+  @override
+  void initState() {
+    initData();
+    super.initState();
+  }
+
+  initData() async {
+    var url = Setting().restendpoint + 'blog/read/${widget.id}';
+
+    var response = json.decode((await http.get(url)).body);
+
+    if (this.mounted)
+      setState(() {
+        data = response;
+      });
+  }
+
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
@@ -10,23 +42,28 @@ class DetailBlog extends StatelessWidget {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              Header(width: width),
-              SizedBox(height: 10),
-              TextTitle(width: width),
-              Divider(width: width),
-              Author(width: width),
-              Thumbnail(width: width),
-              Divider(width: width, more: true),
-              ListParagraph(width: width),
-              Tags(width: width),
-              Footer(width: width)
-            ],
-          ),
-        ),
+        child: data == null
+            ? Center(child: CircularProgressIndicator())
+            : SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Header(width: width),
+                    SizedBox(height: 10),
+                    TextTitle(width: width, title: data['title']),
+                    Divider(width: width),
+                    Author(
+                        width: width,
+                        author: data['author'],
+                        date: data['date_created']),
+                    Thumbnail(width: width, image: data['image_cover']),
+                    Divider(width: width, more: true),
+                    ListParagraph(width: width, data: data['content']),
+                    Tags(width: width, data: data['tags']),
+                    Footer(width: width)
+                  ],
+                ),
+              ),
       ),
     );
   }
@@ -75,9 +112,11 @@ class Tags extends StatelessWidget {
   const Tags({
     Key key,
     @required this.width,
+    this.data,
   }) : super(key: key);
 
   final double width;
+  final List data;
 
   @override
   Widget build(BuildContext context) {
@@ -95,18 +134,14 @@ class Tags extends StatelessWidget {
         alignment: WrapAlignment.start,
         crossAxisAlignment: WrapCrossAlignment.start,
         spacing: 10,
-        children: <Widget>[
-          Tag(text: 'Game', isMain: true),
-          Tag(text: 'Artikel', isMain: true),
-          Tag(text: 'aegis alver'),
-          Tag(text: 'kanata hjuger'),
-          Tag(text: 'aegis alver'),
-          Tag(text: 'misella'),
-          Tag(text: 'arwin granberg'),
-          Tag(text: 'tales of cresteria'),
-          Tag(text: 'vicious'),
-          Tag(text: 'yuna azetta'),
-        ],
+        children: data
+            .map(
+              (e) => Tag(
+                text: e['title'],
+                isMain: e['active'],
+              ),
+            )
+            .toList(),
       ),
     );
   }
@@ -153,9 +188,14 @@ class Tag extends StatelessWidget {
 }
 
 class ListParagraph extends StatelessWidget {
-  ListParagraph({Key key, @required this.width}) : super(key: key);
+  ListParagraph({
+    Key key,
+    @required this.width,
+    this.data,
+  }) : super(key: key);
 
   final double width;
+  final List data;
   bool image = false;
 
   @override
@@ -165,16 +205,16 @@ class ListParagraph extends StatelessWidget {
       child: ListView.builder(
         physics: NeverScrollableScrollPhysics(),
         shrinkWrap: true,
-        itemCount: 8,
+        itemCount: data.length,
         itemBuilder: (ctx, idx) => Container(
           margin: EdgeInsets.only(
             left: width * .05,
             right: width * .05,
             bottom: 12,
           ),
-          child: image == false && idx != 4 && idx != 5
+          child: data[idx]['img'] == null
               ? Text(
-                  'Sebuah game besutan Bandai Namco Entertainment berjudul Tales of Crestoria bakal diluncurkan pada awal Bulan Juni 2020. Hal ini terungkap dari Akun Twitter resmi untuk game ini. Peluncuran akan dilakukan secara simultan diseluruh dunia dan pada nantinya perusahaan akan merilis video promosi baru.',
+                  data[idx]['text'],
                   style: GoogleFonts.poppins(
                     fontSize: 14,
                     color:
@@ -185,18 +225,22 @@ class ListParagraph extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Text(
-                        'Kohei Amasaki sebagai Kanata Hjuger',
-                        style: GoogleFonts.poppins(
-                          fontSize: 14,
-                          color: Theme.of(context)
-                              .textSelectionColor
-                              .withOpacity(.75),
-                        ),
-                      ),
-                      SizedBox(height: 7.5),
+                      data[idx]['text'].trim() == ''
+                          ? Container()
+                          : Text(
+                              'Kohei Amasaki sebagai Kanata Hjuger',
+                              style: GoogleFonts.poppins(
+                                fontSize: 14,
+                                color: Theme.of(context)
+                                    .textSelectionColor
+                                    .withOpacity(.75),
+                              ),
+                            ),
+                      data[idx]['text'].trim() == ''
+                          ? Container()
+                          : SizedBox(height: 7.5),
                       Image.network(
-                        'https://samehadaku.vip/wp-content/uploads/2020/04/Kanata-hjuger-300x157.jpg',
+                        data[idx]['img'],
                         width: width,
                         height: width * .5,
                         fit: BoxFit.cover,
@@ -214,9 +258,12 @@ class Author extends StatelessWidget {
   const Author({
     Key key,
     @required this.width,
+    this.author,
+    this.date,
   }) : super(key: key);
 
   final double width;
+  final String author, date;
 
   @override
   Widget build(BuildContext context) {
@@ -234,7 +281,7 @@ class Author extends StatelessWidget {
           ),
           SizedBox(width: 7),
           Text(
-            'Sorewa Net  - 27 April 2020',
+            '$author  - $date',
             style: GoogleFonts.poppins(
               fontSize: 13,
               color: Theme.of(context).textSelectionColor.withOpacity(.34),
@@ -462,9 +509,11 @@ class Thumbnail extends StatelessWidget {
   const Thumbnail({
     Key key,
     @required this.width,
+    this.image,
   }) : super(key: key);
 
   final double width;
+  final String image;
 
   @override
   Widget build(BuildContext context) {
@@ -476,7 +525,7 @@ class Thumbnail extends StatelessWidget {
         color: Colors.grey,
       ),
       child: Image.network(
-        'https://i0.wp.com/samehadaku.vip/wp-content/uploads/2020/05/2020-05-10_00-42-44.jpg?quality=100',
+        image,
         fit: BoxFit.cover,
       ),
     );
@@ -552,16 +601,18 @@ class TextTitle extends StatelessWidget {
   const TextTitle({
     Key key,
     @required this.width,
+    this.title,
   }) : super(key: key);
 
   final double width;
+  final String title;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: width * .1),
       child: Text(
-        'Game Smartphone Tales of Crestoria bakal Rilis di awal Juni 2020',
+        title,
         style: GoogleFonts.poppins(
           fontSize: 16,
         ),

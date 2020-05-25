@@ -1,9 +1,11 @@
 import 'dart:convert';
 
+import 'package:Samehadaku/pages/detail_blog.dart';
 import 'package:Samehadaku/setting.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
+import 'package:touchable_opacity/touchable_opacity.dart';
 
 class Blog extends StatefulWidget {
   @override
@@ -58,53 +60,65 @@ class _BlogState extends State<Blog> {
           Wrap(
               children: data.map((e) {
             var index = data.indexOf(e);
-            return Container(
-              width: width * .45,
-              margin:
-                  EdgeInsets.only(right: index % 2 == 0 ? 12 : 0, bottom: 12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Image.network(e['image'],
-                      fit: BoxFit.cover, height: width * .30),
-                  SizedBox(height: 5),
-                  Text(
-                    e['title'],
-                    style: GoogleFonts.roboto(
-                      fontSize: 13,
-                      color:
-                          Theme.of(context).textSelectionColor.withOpacity(.77),
+            return TouchableOpacity(
+              activeOpacity: .7,
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => DetailBlog(id: e['linkId']),
+                  ),
+                );
+              },
+              child: Container(
+                width: width * .45,
+                margin:
+                    EdgeInsets.only(right: index % 2 == 0 ? 12 : 0, bottom: 12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Image.network(e['image'],
+                        fit: BoxFit.cover, height: width * .30),
+                    SizedBox(height: 5),
+                    Text(
+                      e['title'],
+                      style: GoogleFonts.roboto(
+                        fontSize: 13,
+                        color: Theme.of(context)
+                            .textSelectionColor
+                            .withOpacity(.77),
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                     ),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  SizedBox(height: 5),
-                  Text(
-                    e['sub'],
-                    style: GoogleFonts.roboto(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w300,
-                        color: Theme.of(context)
-                            .textSelectionColor
-                            .withOpacity(.71)),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  SizedBox(height: 5),
-                  Text(
-                    e['date'],
-                    style: GoogleFonts.roboto(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w300,
-                        fontStyle: FontStyle.italic,
-                        color: Theme.of(context)
-                            .textSelectionColor
-                            .withOpacity(.71)),
-                    maxLines: 1,
-                    textAlign: TextAlign.left,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
+                    SizedBox(height: 5),
+                    Text(
+                      e['sub'],
+                      style: GoogleFonts.roboto(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w300,
+                          color: Theme.of(context)
+                              .textSelectionColor
+                              .withOpacity(.71)),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    SizedBox(height: 5),
+                    Text(
+                      e['date'],
+                      style: GoogleFonts.roboto(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w300,
+                          fontStyle: FontStyle.italic,
+                          color: Theme.of(context)
+                              .textSelectionColor
+                              .withOpacity(.71)),
+                      maxLines: 1,
+                      textAlign: TextAlign.left,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
               ),
             );
           }).toList()
