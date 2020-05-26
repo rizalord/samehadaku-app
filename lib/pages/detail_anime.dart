@@ -63,8 +63,12 @@ class _DetailAnimeState extends State<DetailAnime> {
                       width: width,
                       image: data['image'],
                       title: data['title'],
-                      ratingValue: data['ratingValue'],
-                      ratingCount: data['ratingCount'],
+                      ratingValue: data['ratingValue'] != null
+                          ? data['ratingValue']
+                          : '-',
+                      ratingCount: data['ratingCount'] != null
+                          ? data['ratingValue']
+                          : '-',
                     ),
                     Sinopsis(
                       width: width,
@@ -74,10 +78,12 @@ class _DetailAnimeState extends State<DetailAnime> {
                         width: width,
                         genre: data['genre'],
                         detail: data['detail']),
-                    YoutubePlay(
-                      width: width,
-                      id: data['youtube']['id'],
-                    ),
+                    data['youtube'] != null
+                        ? YoutubePlay(
+                            width: width,
+                            id: data['youtube']['id'],
+                          )
+                        : Container(),
                     EpisodeList(
                       width: width,
                       data: data['list_episode'],

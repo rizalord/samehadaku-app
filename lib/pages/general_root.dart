@@ -39,7 +39,7 @@ class GeneralMainState extends State<GeneralMain> {
           controller: _pageController,
           children: <Widget>[
             TabPages(changePage: changePage),
-            SearchPage(),
+            SearchPage(changePage: changePage),
           ],
         ),
       ),
