@@ -8,6 +8,11 @@ import 'package:http/http.dart' as http;
 import 'package:touchable_opacity/touchable_opacity.dart';
 
 class Blog extends StatefulWidget {
+  final bool loaded;
+  final Function changePage;
+
+  Blog({this.loaded, this.changePage});
+
   @override
   _BlogState createState() => _BlogState();
 }
@@ -55,7 +60,10 @@ class _BlogState extends State<Blog> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          SubHeader(width: width),
+          SubHeader(
+            width: width,
+            changePage: widget.changePage,
+          ),
           SizedBox(height: 10),
           Wrap(
               children: data.map((e) {
@@ -340,9 +348,11 @@ class SubHeader extends StatelessWidget {
   const SubHeader({
     Key key,
     @required this.width,
+    this.changePage,
   }) : super(key: key);
 
   final double width;
+  final Function changePage;
 
   @override
   Widget build(BuildContext context) {
@@ -361,16 +371,20 @@ class SubHeader extends StatelessWidget {
                   style: Theme.of(context).textTheme.headline1,
                   textAlign: TextAlign.left,
                 ),
-                Container(
-                  child: Row(
-                    children: <Widget>[
-                      Text(
-                        'Show more',
-                        style: Theme.of(context).textTheme.headline2,
-                        textAlign: TextAlign.left,
-                      ),
-                      Icon(Icons.chevron_right)
-                    ],
+                TouchableOpacity(
+                  onTap: () => changePage(3),
+                  activeOpacity: .7,
+                  child: Container(
+                    child: Row(
+                      children: <Widget>[
+                        Text(
+                          'Show more',
+                          style: Theme.of(context).textTheme.headline2,
+                          textAlign: TextAlign.left,
+                        ),
+                        Icon(Icons.chevron_right)
+                      ],
+                    ),
                   ),
                 )
               ],

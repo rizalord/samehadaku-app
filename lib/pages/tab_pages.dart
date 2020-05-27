@@ -26,7 +26,7 @@ class _TabPagesState extends State<TabPages> with AutomaticKeepAliveClientMixin 
   void initState() {
     super.initState();
     pages = [
-      Home(changePage: widget.changePage),
+      Home(changePage: widget.changePage , changeTab: this.changeTab),
       Season(),
       DateRelease(),
       NotificationPage(),
@@ -54,6 +54,7 @@ class _TabPagesState extends State<TabPages> with AutomaticKeepAliveClientMixin 
           backgroundColor: Colors.transparent,
           items: <Widget>[
             Tab(
+
                 icon: Icon(Icons.home,
                     color: Theme.of(context).tabBarTheme.labelColor)),
             Tab(
@@ -70,6 +71,7 @@ class _TabPagesState extends State<TabPages> with AutomaticKeepAliveClientMixin 
                     color: Theme.of(context).tabBarTheme.labelColor)),
           ],
           onTap: changeTab,
+          index: index,
         ),
         body: SafeArea(
           child: PageView(

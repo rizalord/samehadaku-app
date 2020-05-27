@@ -59,7 +59,6 @@ class _SearchPageState extends State<SearchPage> {
 
         var response = json.decode((await http.get(url)).body);
 
-        print(response);
         if (this.mounted)
           setState(() {
             getMore = false;

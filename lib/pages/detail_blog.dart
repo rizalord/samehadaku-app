@@ -48,7 +48,10 @@ class _DetailBlogState extends State<DetailBlog> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
-                    Header(width: width),
+                    Header(
+                      width: width,
+                      url: 'https://samehadaku.vip/blog/${widget.id}',
+                    ),
                     SizedBox(height: 10),
                     TextTitle(width: width, title: data['title']),
                     Divider(width: width),

@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class Browser extends StatefulWidget {
@@ -40,6 +41,14 @@ class _BrowserState extends State<Browser> {
     checkPermission();
     url = widget.url;
     super.initState();
+  }
+
+  _launchURL() async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 
   void onUrlChange(String url, DownloadBloc bloc) {
@@ -118,7 +127,8 @@ class _BrowserState extends State<Browser> {
           List currentState = bloc.state;
           currentState = currentState.map((e) {
             if (e['fileName'] == fileName) {
-              e['percentage'] = double.parse(((rec / total) * 100).toStringAsFixed(0));
+              e['percentage'] =
+                  double.parse(((rec / total) * 100).toStringAsFixed(0));
               e['fileSize'] = total;
               e['fileDownloaded'] = rec;
             }
@@ -152,10 +162,14 @@ class _BrowserState extends State<Browser> {
           title: Text(url),
           actions: [
             PopupMenuButton(
+              onSelected: (value) {
+                this._launchURL();
+              },
               itemBuilder: (BuildContext context) {
                 return [
                   PopupMenuItem(
                     child: Text('Open in Browser'),
+                    value: true,
                   ),
                 ];
               },

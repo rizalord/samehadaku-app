@@ -9,9 +9,9 @@ import './../components/home_blog.dart';
 import 'package:http/http.dart' as http;
 
 class Home extends StatefulWidget {
-  final Function changePage;
+  final Function changePage, changeTab;
 
-  Home({this.changePage});
+  Home({this.changePage, this.changeTab});
 
   @override
   _HomeState createState() => _HomeState();
@@ -48,7 +48,10 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
             Header(changePage: widget.changePage),
             Carousel(data: data == null ? [] : data['season']),
             MainContent(data: data == null ? [] : data['latest']),
-            Blog()
+            Blog(
+              loaded: data == null ? false : true,
+              changePage: widget.changeTab,
+            )
           ],
         ),
       ),

@@ -1,5 +1,7 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shimmer/shimmer.dart';
 
 class EpsCard extends StatelessWidget {
   final String image, title, episode, author, release;
@@ -26,14 +28,21 @@ class EpsCard extends StatelessWidget {
             width: width * .4,
             height: width * 0.28,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(5),
-              color: Colors.grey
-            ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(5),
-              child: Image.network(
-                image,
-                fit: BoxFit.cover,
+                borderRadius: BorderRadius.circular(5), color: Colors.grey),
+            child: Shimmer(
+              gradient: LinearGradient(
+                colors: [
+                  Colors.grey,
+                  Colors.white,
+                ],
+              ),
+              period: Duration(seconds: 3),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(5),
+                child: CachedNetworkImage(
+                  imageUrl: image,
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
           ),

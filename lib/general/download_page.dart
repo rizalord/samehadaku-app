@@ -26,6 +26,12 @@ class _DownloadPageState extends State<DownloadPage> {
     streamTest();
   }
 
+  @override
+  void dispose() {
+    print('SAYA DISPOSE BANGSAT');
+    super.dispose();
+  }
+
   void streamTest() {
     StreamController<double> controller = StreamController<double>();
     Stream stream = controller.stream;
@@ -34,10 +40,12 @@ class _DownloadPageState extends State<DownloadPage> {
     });
 
     double count = 1;
-    Timer.periodic(Duration(seconds: 1), (timer) {
+    Timer.periodic(Duration(seconds: 5), (timer) {
       controller.add(count++);
     });
   }
+
+  
 
   void getFiles() async {
     try {
@@ -60,6 +68,8 @@ class _DownloadPageState extends State<DownloadPage> {
           .where((element) =>
               int.parse(element['fileSize']) > 41686603 ||
               element['exist'] == true)
+          .toList()
+          .reversed
           .toList();
 
       newDirListMap = await Future.wait(

@@ -6,6 +6,7 @@ import 'package:Samehadaku/setting.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:share/share.dart';
 import 'package:touchable_opacity/touchable_opacity.dart';
 import './../components/detail_header.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
@@ -58,7 +59,10 @@ class _DetailAnimeState extends State<DetailAnime> {
             : SingleChildScrollView(
                 child: Column(
                   children: <Widget>[
-                    Header(width: width),
+                    Header(
+                      width: width,
+                      url: 'https://samehadaku.vip/anime/${widget.url}/',
+                    ),
                     AnimeHeader(
                       width: width,
                       image: data['image'],
@@ -69,6 +73,9 @@ class _DetailAnimeState extends State<DetailAnime> {
                       ratingCount: data['ratingCount'] != null
                           ? data['ratingValue']
                           : '-',
+                      status: data['detail']['Status'],
+                      link: 'https://samehadaku.vip/anime/${widget.url}/',
+                      firstEpisode: data['list_episode'].last['link'],
                     ),
                     Sinopsis(
                       width: width,
@@ -90,7 +97,9 @@ class _DetailAnimeState extends State<DetailAnime> {
                     ),
                     Rekomendasi(
                       width: width,
-                      data: data['recommend'],
+                      data: data['recommend'].length <= 5
+                          ? data['recommend']
+                          : data['recommend'].sublist(0, 5),
                     ),
                     LatestUpdate(
                       width: width,
@@ -201,7 +210,9 @@ class LatestUpdate extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                     ),
                     Text(
-                      data[idx]['genre'].sublist(0, 2).join(', '),
+                      data[idx]['genre'].length > 2
+                          ? data[idx]['genre'].sublist(0, 2).join(', ')
+                          : data[idx]['genre'].join(', '),
                       style: GoogleFonts.poppins(
                         fontSize: 12,
                         color: Colors.black.withOpacity(.53),
@@ -314,7 +325,9 @@ class Rekomendasi extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                     ),
                     Text(
-                      data[idx]['genre'].sublist(0, 2).join(', '),
+                      data[idx]['genre'].length > 2
+                          ? data[idx]['genre'].sublist(0, 2).join(', ')
+                          : data[idx]['genre'].join(', '),
                       style: GoogleFonts.poppins(
                         fontSize: 12,
                         color: Colors.black.withOpacity(.53),
@@ -973,10 +986,19 @@ class AnimeHeader extends StatelessWidget {
     this.image,
     this.ratingCount,
     this.ratingValue,
+    this.status,
+    this.link,
+    this.firstEpisode,
   }) : super(key: key);
 
   final double width;
-  final String image, title, ratingValue, ratingCount;
+  final String image,
+      title,
+      ratingValue,
+      ratingCount,
+      status,
+      link,
+      firstEpisode;
 
   @override
   Widget build(BuildContext context) {
@@ -1023,7 +1045,7 @@ class AnimeHeader extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                       ),
                       Text(
-                        'Ongoing',
+                        status,
                         style: GoogleFonts.poppins(
                           fontSize: 15,
                           fontWeight: FontWeight.w300,
@@ -1077,19 +1099,38 @@ class AnimeHeader extends StatelessWidget {
                             fontSize: 15,
                           ),
                         ),
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            PageTransition(
+                              type: PageTransitionType.fade,
+                              child: DetailEpisode(
+                                link: firstEpisode,
+                              ),
+                            ),
+                          );
+                        },
                       ),
-                      Container(
-                        width: 37,
-                        height: 37,
-                        decoration: BoxDecoration(
-                            color: Color(0xFF565656),
-                            borderRadius: BorderRadius.circular(7)),
-                        alignment: Alignment.center,
-                        child: Icon(
-                          Icons.share,
-                          color: Colors.white,
-                          size: 24,
+                      TouchableOpacity(
+                        activeOpacity: .7,
+                        onTap: () {
+                          Share.share(
+                              'Tonton Anime $title Subtitle Indonesia hanya di Samehadaku! \n\n$link',
+                              subject:
+                                  'Tonton Anime $title Subtitle Indonesia hanya di Samehadaku! \n\n$link');
+                        },
+                        child: Container(
+                          width: 37,
+                          height: 37,
+                          decoration: BoxDecoration(
+                              color: Color(0xFF565656),
+                              borderRadius: BorderRadius.circular(7)),
+                          alignment: Alignment.center,
+                          child: Icon(
+                            Icons.share,
+                            color: Colors.white,
+                            size: 24,
+                          ),
                         ),
                       )
                     ],

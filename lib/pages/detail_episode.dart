@@ -31,7 +31,7 @@ class _DetailEpisodeState extends State<DetailEpisode> {
     var id = widget.link.replaceAll('https://samehadaku.vip/', '');
     var url = Setting().restendpoint + 'anime/eps/$id';
     var response = json.decode((await http.get(url)).body);
-  
+
     if (this.mounted)
       setState(() {
         data = response;
@@ -50,7 +50,10 @@ class _DetailEpisodeState extends State<DetailEpisode> {
             : SingleChildScrollView(
                 child: Column(
                   children: <Widget>[
-                    Header(width: width),
+                    Header(
+                      width: width,
+                      url: widget.link,
+                    ),
                     SizedBox(height: 10),
                     TextTitle(width: width, title: data['title']),
                     Divider(width: width),

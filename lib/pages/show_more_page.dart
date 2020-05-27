@@ -31,9 +31,10 @@ class _ShowMorePageState extends State<ShowMorePage> {
 
     var response = json.decode((await http.get(url)).body);
 
-    setState(() {
-      _data = response['latest'];
-    });
+    if (this.mounted)
+      setState(() {
+        _data = response['latest'];
+      });
   }
 
   void onBottomReached() {
@@ -47,19 +48,20 @@ class _ShowMorePageState extends State<ShowMorePage> {
 
   void addMore() async {
     _page++;
-    setState(() {
-      _showLoading = true;
-      Future.delayed(Duration(seconds: 0), () async {
-        var url = 'https://samehadaku-rest-api.herokuapp.com/page/$_page';
-        var response = json.decode((await http.get(url)).body);
+    if (this.mounted)
+      setState(() {
+        _showLoading = true;
+        Future.delayed(Duration(seconds: 0), () async {
+          var url = 'https://samehadaku-rest-api.herokuapp.com/page/$_page';
+          var response = json.decode((await http.get(url)).body);
 
-        if (this.mounted)
-          setState(() {
-            _showLoading = false;
-            _data.addAll(response['latest']);
-          });
+          if (this.mounted)
+            setState(() {
+              _showLoading = false;
+              _data.addAll(response['latest']);
+            });
+        });
       });
-    });
   }
 
   @override
@@ -82,7 +84,7 @@ class _ShowMorePageState extends State<ShowMorePage> {
                             type: PageTransitionType.fade,
                             child: DetailEpisode(
                               link: _data[idx]['link'],
-                      image: _data[idx]['image'],
+                              image: _data[idx]['image'],
                             ),
                           ),
                         );
