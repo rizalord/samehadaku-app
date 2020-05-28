@@ -1,4 +1,5 @@
 import 'package:Samehadaku/components/eps_card.dart';
+import 'package:Samehadaku/components/shimmer/eps_card_shimmer.dart';
 import 'package:Samehadaku/pages/detail_episode.dart';
 import 'package:Samehadaku/pages/show_more_page.dart';
 import 'package:flutter/material.dart';
@@ -37,33 +38,41 @@ class MainContent extends StatelessWidget {
           SizedBox(
             height: 10,
           ),
-          ListView.builder(
-            physics: NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            scrollDirection: Axis.vertical,
-            itemCount: data.length,
-            itemBuilder: (ctx, idx) => TouchableOpacity(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  PageTransition(
-                    type: PageTransitionType.fade,
-                    child: DetailEpisode(
-                      link: data[idx]['link'],
+          data.isEmpty
+              ? ListView.builder(
+                  physics: NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  scrollDirection: Axis.vertical,
+                  itemCount: 2,
+                  itemBuilder: (ctx, idx) => EpsCardShimmer(),
+                )
+              : ListView.builder(
+                  physics: NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  scrollDirection: Axis.vertical,
+                  itemCount: data.length,
+                  itemBuilder: (ctx, idx) => TouchableOpacity(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        PageTransition(
+                          type: PageTransitionType.fade,
+                          child: DetailEpisode(
+                            link: data[idx]['link'],
+                            image: data[idx]['image'],
+                          ),
+                        ),
+                      );
+                    },
+                    child: EpsCard(
                       image: data[idx]['image'],
+                      title: data[idx]['title'],
+                      episode: data[idx]['episode'],
+                      author: data[idx]['postedBy'],
+                      release: data[idx]['release_time'],
                     ),
                   ),
-                );
-              },
-              child: EpsCard(
-                image: data[idx]['image'],
-                title: data[idx]['title'],
-                episode: data[idx]['episode'],
-                author: data[idx]['postedBy'],
-                release: data[idx]['release_time'],
-              ),
-            ),
-          ),
+                ),
         ],
       ),
     );
