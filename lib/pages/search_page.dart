@@ -455,7 +455,7 @@ class SearchBar extends StatelessWidget {
   final double width;
   final GlobalKey<FormState> _formKey;
   final Function changePage, search;
-  TextEditingController textController = TextEditingController();
+  final TextEditingController textController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {

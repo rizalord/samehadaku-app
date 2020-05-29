@@ -46,6 +46,8 @@ dependencies:
   open_file: ^3.0.1
   shimmer: ^1.1.1
   firebase_admob: ^0.9.3+2
+  flutter_downloader: ^1.4.4
+  device_info: ^0.4.2+4
 
 dev_dependencies:
   flutter_test:

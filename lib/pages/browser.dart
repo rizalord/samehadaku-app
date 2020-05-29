@@ -1,9 +1,13 @@
 import 'dart:io';
+import 'dart:isolate';
+import 'dart:ui';
 
 import 'package:Samehadaku/bloc/download_bloc.dart';
+import 'package:device_info/device_info.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -24,6 +28,7 @@ class Browser extends StatefulWidget {
 class _BrowserState extends State<Browser> {
   WebViewController _controller;
   String url;
+  ReceivePort _port = ReceivePort();
 
   Future<bool> _exitApp(BuildContext context) async {
     if (await _controller.canGoBack()) {
@@ -41,6 +46,16 @@ class _BrowserState extends State<Browser> {
     checkPermission();
     url = widget.url;
     super.initState();
+
+    IsolateNameServer.registerPortWithName(
+        _port.sendPort, 'downloader_send_port');
+    _port.listen((dynamic data) {
+      // String id = data[0];
+      // DownloadTaskStatus status = data[1];
+      // int progress = data[2];
+    });
+
+    FlutterDownloader.registerCallback(downloadCallback);
   }
 
   _launchURL() async {
@@ -52,7 +67,10 @@ class _BrowserState extends State<Browser> {
   }
 
   void onUrlChange(String url, DownloadBloc bloc) {
-    if (url.contains('.mkv') || url.contains('.mp4') || url.contains('.3gp')) {
+    if ((url.contains('.mkv') ||
+            url.contains('.mp4') ||
+            url.contains('.3gp')) &&
+        url.contains('SAMEHADAKU')) {
       downloadVideo(url, bloc);
     }
     setState(() {
@@ -71,6 +89,13 @@ class _BrowserState extends State<Browser> {
     final directory = await getExternalStorageDirectory();
 
     return directory.path.toString() + Platform.pathSeparator + 'download';
+  }
+
+  static void downloadCallback(id, DownloadTaskStatus status, progress) {
+    print('Download task ($id) is in status ($status) and process ($progress)');
+    final SendPort send =
+        IsolateNameServer.lookupPortByName('downloader_send_port');
+    send.send([id, status, progress]);
   }
 
   void downloadVideo(String urlDownload, DownloadBloc bloc) async {
@@ -93,6 +118,30 @@ class _BrowserState extends State<Browser> {
     // print(dir);
     // print(fileName);
 
+    var androidInfo = await DeviceInfoPlugin().androidInfo;
+    var sdk = androidInfo.version.sdkInt;
+
+    Navigator.pop(context);
+    
+    // Android Lollipop
+    if (sdk <= 22) {
+      await downloadForLowApi(bloc, fileName, dio, urlDownload, dir);
+    }
+    // Android Marshmallow and Up
+    else
+      await FlutterDownloader.enqueue(
+        url: urlDownload,
+        savedDir: dir,
+        fileName: fileName,
+        showNotification: true,
+        openFileFromNotification: true,
+      );
+
+    
+  }
+
+  Future downloadForLowApi(DownloadBloc bloc, String fileName, Dio dio,
+      String urlDownload, String dir) async {
     // menambahkan download ke list download bloc
     List currentState = bloc.state;
     currentState.add({
@@ -104,11 +153,10 @@ class _BrowserState extends State<Browser> {
     });
     bloc.add(currentState);
 
-    Navigator.pop(context);
     try {
       await dio.download(
         urlDownload,
-        '${dir}/${fileName}',
+        '$dir/$fileName',
         deleteOnError: true,
         onReceiveProgress: (rec, total) {
           if (rec == total) {

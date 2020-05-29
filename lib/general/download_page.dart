@@ -26,11 +26,6 @@ class _DownloadPageState extends State<DownloadPage> {
     streamTest();
   }
 
-  @override
-  void dispose() {
-    print('SAYA DISPOSE BANGSAT');
-    super.dispose();
-  }
 
   void streamTest() {
     StreamController<double> controller = StreamController<double>();
@@ -77,7 +72,7 @@ class _DownloadPageState extends State<DownloadPage> {
         data = newDirListMap;
       });
     } catch (e) {
-      print('tangkap error $e');
+      // print('tangkap error $e');
     }
   }
 

@@ -14,7 +14,6 @@ class ShowMorePage extends StatefulWidget {
 
 class _ShowMorePageState extends State<ShowMorePage> {
   var _scrollController = ScrollController();
-  var _itemCount = 10;
   var _showLoading = false;
   var _page = 1;
   var _data = [];

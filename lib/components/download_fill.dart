@@ -66,9 +66,9 @@ class Item extends StatefulWidget {
     this.fileSize,
     this.downloaded,
     this.filePath,
-    this.fileDownloaded = null,
+    this.fileDownloaded ,
     this.percentage,
-    this.thumbnail = null,
+    this.thumbnail ,
   }) : super(key: key);
 
   final String title, fileSize, filePath, fileDownloaded, thumbnail;
