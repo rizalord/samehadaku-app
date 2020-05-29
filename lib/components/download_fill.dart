@@ -1,17 +1,15 @@
 import 'dart:io';
 
-import 'package:Samehadaku/bloc/download_bloc.dart';
 import 'package:filesize/filesize.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:open_file/open_file.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
-import 'package:touchable_opacity/touchable_opacity.dart';
 
 class FilledDownload extends StatefulWidget {
   final List data, dataDownload;
 
-  FilledDownload({this.data , this.dataDownload });
+  FilledDownload({this.data = const [], this.dataDownload = const []});
 
   @override
   _FilledDownloadState createState() => _FilledDownloadState();
@@ -20,6 +18,7 @@ class FilledDownload extends StatefulWidget {
 class _FilledDownloadState extends State<FilledDownload> {
   @override
   void initState() {
+    print('ini adalah init filled');
     super.initState();
   }
 
@@ -85,23 +84,13 @@ class _ItemState extends State<Item> {
   bool downloaded;
 
   @override
-  void initState() {
-    this.title = widget.title;
-    this.fileSize = widget.fileSize;
-    this.filePath = widget.filePath;
-    this.downloaded = widget.downloaded;
-
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
 
-    return TouchableOpacity(
-      activeOpacity: widget.filePath == null ? 1.0 : .7,
+    return InkWell(
       onTap: () {
-        if (widget.filePath != null) OpenFile.open(widget.filePath , type: 'video/*');
+        if (widget.filePath != null)
+          OpenFile.open(widget.filePath, type: 'video/*');
       },
       child: Container(
         width: width,

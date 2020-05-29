@@ -40,7 +40,7 @@ class _DownloadPageState extends State<DownloadPage> {
     });
 
     double count = 1;
-    Timer.periodic(Duration(seconds: 1), (timer) {
+    Timer.periodic(Duration(seconds: 5), (timer) {
       controller.add(count++);
     });
   }
@@ -73,26 +73,27 @@ class _DownloadPageState extends State<DownloadPage> {
       newDirListMap = await Future.wait(
           newDirListMap.map((e) async => await getThumbnail(e)));
 
-      if (this.mounted)
-        setState(() {
-          data = newDirListMap;
-        });
+      setState(() {
+        data = newDirListMap;
+      });
     } catch (e) {
       print('tangkap error $e');
     }
   }
 
   Future<Map> getThumbnail(e) async {
-    e['thumbnail'] = e['exist'] == true
-        ? await Thumbnails.getThumbnail(
-            thumbnailFolder: (await getExternalStorageDirectory()).path +
-                Platform.pathSeparator +
-                'thumbnail',
-            videoFile: e['filePath'],
-            imageType: ThumbFormat.PNG,
-            quality: 30,
-          )
-        : null;
+    try {
+      e['thumbnail'] = e['exist'] == true
+          ? await Thumbnails.getThumbnail(
+              thumbnailFolder: (await getExternalStorageDirectory()).path +
+                  Platform.pathSeparator +
+                  'thumbnail',
+              videoFile: e['filePath'],
+              imageType: ThumbFormat.PNG,
+              quality: 30,
+            )
+          : null;
+    } catch (e) {}
 
     return e;
   }
@@ -109,7 +110,6 @@ class _DownloadPageState extends State<DownloadPage> {
             Header(width: width),
             BlocBuilder<DownloadBloc, List>(
               builder: (ctx, currentValue) {
-                print(currentValue);
                 return data.isEmpty && currentValue.isEmpty
                     ? Empty()
                     : FilledDownload(
