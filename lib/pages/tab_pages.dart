@@ -15,7 +15,7 @@ class TabPages extends StatefulWidget {
   _TabPagesState createState() => _TabPagesState();
 }
 
-class _TabPagesState extends State<TabPages> with AutomaticKeepAliveClientMixin {
+class _TabPagesState extends State<TabPages> {
   PageController _pageController;
   int index = 0;
 
@@ -26,7 +26,7 @@ class _TabPagesState extends State<TabPages> with AutomaticKeepAliveClientMixin 
   void initState() {
     super.initState();
     pages = [
-      Home(changePage: widget.changePage , changeTab: this.changeTab),
+      Home(changePage: widget.changePage, changeTab: this.changeTab),
       Season(),
       DateRelease(),
       NotificationPage(),
@@ -54,7 +54,6 @@ class _TabPagesState extends State<TabPages> with AutomaticKeepAliveClientMixin 
           backgroundColor: Colors.transparent,
           items: <Widget>[
             Tab(
-
                 icon: Icon(Icons.home,
                     color: Theme.of(context).tabBarTheme.labelColor)),
             Tab(
@@ -84,7 +83,4 @@ class _TabPagesState extends State<TabPages> with AutomaticKeepAliveClientMixin 
       ),
     );
   }
-
-  @override
-  bool get wantKeepAlive => true;
 }

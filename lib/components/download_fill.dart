@@ -11,7 +11,7 @@ import 'package:touchable_opacity/touchable_opacity.dart';
 class FilledDownload extends StatefulWidget {
   final List data, dataDownload;
 
-  FilledDownload({this.data = const [], this.dataDownload = const []});
+  FilledDownload({this.data , this.dataDownload });
 
   @override
   _FilledDownloadState createState() => _FilledDownloadState();

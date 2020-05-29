@@ -143,8 +143,8 @@ class _BrowserState extends State<Browser> {
 
           bloc.add(currentState);
 
-          print(
-              'Rec: $rec , Total: $total , Percentage: ${((rec / total) * 100).toStringAsFixed(0)}%');
+          // print(
+          //     'Rec: $rec , Total: $total , Percentage: ${((rec / total) * 100).toStringAsFixed(0)}%');
         },
       );
     } catch (e) {
