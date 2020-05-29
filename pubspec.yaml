@@ -45,6 +45,7 @@ dependencies:
   share: ^0.6.4+3
   open_file: ^3.0.1
   shimmer: ^1.1.1
+  firebase_admob: ^0.9.3+2
 
 dev_dependencies:
   flutter_test:

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:Samehadaku/pages/detail_episode.dart';
 import 'package:Samehadaku/pages/show_more_page.dart';
 import 'package:Samehadaku/setting.dart';
+import 'package:firebase_admob/firebase_admob.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:page_transition/page_transition.dart';
@@ -24,10 +25,25 @@ class DetailAnime extends StatefulWidget {
 class _DetailAnimeState extends State<DetailAnime> {
   Map data;
 
+  BannerAd myBanner;
+
+  BannerAd buildBanner() => BannerAd(
+      adUnitId: Setting().bannerUnitId,
+      size: AdSize.banner,
+      listener: (event) {
+        if (event == MobileAdEvent.loaded) {
+          myBanner
+            ..show(
+              anchorType: AnchorType.bottom,
+            );
+        }
+      });
+
   @override
   void initState() {
     getData();
     super.initState();
+    myBanner = buildBanner()..load();
   }
 
   getData() async {
@@ -110,6 +126,12 @@ class _DetailAnimeState extends State<DetailAnime> {
               ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    myBanner.dispose();
+    super.dispose();
   }
 }
 
@@ -386,7 +408,7 @@ class EpisodeList extends StatelessWidget {
                 children: data
                     .map((e) => SingleLink(
                         width: width,
-                        number: e['episode'],
+                        number: e['episode'] == 'Movie' ? '1' : e['episode'],
                         title: e['title'],
                         date: e['date_uploaded'],
                         id: e['id'],

@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:Samehadaku/pages/browser.dart';
 import 'package:Samehadaku/setting.dart';
+import 'package:firebase_admob/firebase_admob.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:page_transition/page_transition.dart';
@@ -21,10 +22,27 @@ class DetailEpisode extends StatefulWidget {
 class _DetailEpisodeState extends State<DetailEpisode> {
   Map data;
 
+  BannerAd myBanner;
+
+  BannerAd buildBanner() => BannerAd(
+      adUnitId: Setting().bannerUnitId,
+      size: AdSize.banner,
+      listener: (event) {
+        if (event == MobileAdEvent.loaded) {
+          myBanner
+            ..show(
+              anchorType: AnchorType.bottom,
+            );
+        }
+      });
+
   @override
   void initState() {
     initData();
     super.initState();
+
+    FirebaseAdMob.instance.initialize(appId: FirebaseAdMob.testAppId);
+    myBanner = buildBanner()..load();
   }
 
   initData() async {
@@ -77,6 +95,12 @@ class _DetailEpisodeState extends State<DetailEpisode> {
               ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    myBanner.dispose();
+    super.dispose();
   }
 }
 
