@@ -100,7 +100,7 @@ Copyright (c) 2020-present, ahmadkhamdani9 (rizalord)
 <!-- CONTACT -->
 ## Contact
 
-Your Name - [@Rizal92183683](https://twitter.com/Rizal92183683) - ahmadkhamdani9@gmail.com
+Ahmad Rizal Khamdani - [@Rizal92183683](https://twitter.com/Rizal92183683) - ahmadkhamdani9@gmail.com
 
 Project Link: [https://github.com/rizalord/samehadaku-app](https://github.com/rizalord/samehadaku-app)
 
