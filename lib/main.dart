@@ -9,12 +9,12 @@ import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:google_fonts/google_fonts.dart';
 import './pages/splash_screen.dart';
 
-void main() async  {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-    await FlutterDownloader.initialize(
+  await FlutterDownloader.initialize(
       debug: true // optional: set false to disable printing logs to console
-    );
-    
+      );
+
   runApp(MyApp());
 }
 
@@ -57,7 +57,7 @@ class _MyAppState extends State<MyApp> {
     return BlocProvider<DownloadBloc>(
       create: (ctx) => DownloadBloc(),
       child: MaterialApp(
-        themeMode: ThemeMode.light,
+        themeMode: ThemeMode.system,
         // DARK THEME
         darkTheme: ThemeData(
           brightness: Brightness.dark,
