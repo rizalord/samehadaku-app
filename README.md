@@ -65,6 +65,17 @@
 
 Samehadaku App is a Mobile App that inspired by Samehadaku website and built using Flutter.
 
+I find it hard to search anime, website domain that change every year, so many ads, and slow download speed. So 
+this application is suitable for you if you experience problems as mentioned.
+
+Feature:
+
+- Fast Download with Zippyshare link
+- Download notification (only for android 6.0 and higher android version)
+- Find anime you like with Searching Feature
+- Featured Anime
+- News Update from Official Page (Blog)
+
 <!-- PREVIEW -->
 ## Preview
 [![Product Name Screen Shot][product-screenshot]]
