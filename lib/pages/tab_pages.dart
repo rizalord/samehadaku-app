@@ -1,4 +1,4 @@
-import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 import 'package:flutter/material.dart';
 import './../general/home.dart';
 import './../general/season.dart';
@@ -48,29 +48,17 @@ class _TabPagesState extends State<TabPages> {
     return DefaultTabController(
       length: 5,
       child: Scaffold(
-        bottomNavigationBar: CurvedNavigationBar(
-          color: Theme.of(context).tabBarTheme.unselectedLabelColor,
+        bottomNavigationBar: ConvexAppBar(
           height: 60,
-          backgroundColor: Colors.transparent,
-          items: <Widget>[
-            Tab(
-                icon: Icon(Icons.home,
-                    color: Theme.of(context).tabBarTheme.labelColor)),
-            Tab(
-                icon: Icon(Icons.wb_sunny,
-                    color: Theme.of(context).tabBarTheme.labelColor)),
-            Tab(
-                icon: Icon(Icons.date_range,
-                    color: Theme.of(context).tabBarTheme.labelColor)),
-            Tab(
-                icon: Icon(Icons.notifications,
-                    color: Theme.of(context).tabBarTheme.labelColor)),
-            Tab(
-                icon: Icon(Icons.cloud_download,
-                    color: Theme.of(context).tabBarTheme.labelColor)),
+          items: [
+            TabItem(icon: Icons.home),
+            TabItem(icon: Icons.wb_sunny),
+            TabItem(icon: Icons.date_range),
+            TabItem(icon: Icons.notifications),
+            TabItem(icon: Icons.cloud_download),
           ],
           onTap: changeTab,
-          index: index,
+          initialActiveIndex: index,
         ),
         body: SafeArea(
           child: PageView(
