@@ -76,6 +76,7 @@ Feature:
 - Featured Anime
 - News Update from Official Page (Blog)
 
+
 <!-- PREVIEW -->
 ## Preview
 [![Product Name Screen Shot][product-screenshot]]
@@ -84,6 +85,8 @@ Feature:
 
 <!-- GETTING STARTED -->
 ## Getting Started
+
+> :warning: **Note**: SDK version 29+ is not supported yet!
 
 This project is a starting point for a Flutter application.
 
