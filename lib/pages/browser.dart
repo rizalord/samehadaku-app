@@ -115,20 +115,23 @@ class _BrowserState extends State<Browser> {
     fileName = fileName.split('/').last;
     Dio dio = Dio();
 
-    // print(dir);
-    // print(fileName);
-
     var androidInfo = await DeviceInfoPlugin().androidInfo;
     var sdk = androidInfo.version.sdkInt;
 
     Navigator.pop(context);
-    
+
     // Android Lollipop
     if (sdk <= 22) {
       await downloadForLowApi(bloc, fileName, dio, urlDownload, dir);
     }
     // Android Marshmallow and Up
-    else
+    else {
+      final savedDir = Directory(dir);
+      bool hasExisted = savedDir.existsSync();
+      if (!hasExisted) {
+        savedDir.createSync();
+      }
+
       await FlutterDownloader.enqueue(
         url: urlDownload,
         savedDir: dir,
@@ -136,8 +139,7 @@ class _BrowserState extends State<Browser> {
         showNotification: true,
         openFileFromNotification: true,
       );
-
-    
+    }
   }
 
   Future downloadForLowApi(DownloadBloc bloc, String fileName, Dio dio,

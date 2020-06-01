@@ -4,6 +4,7 @@
 import 'package:Samehadaku/bloc/download_bloc.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -28,7 +29,14 @@ class _MyAppState extends State<MyApp> {
 
   @override
   void initState() {
+    // Disable Change Orientation
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
+
     super.initState();
+    
+    // Configure Firebase Messaging
     _fcm.configure(
       onMessage: (Map<String, dynamic> message) async {
         print("onMessage: $message");
@@ -57,7 +65,7 @@ class _MyAppState extends State<MyApp> {
     return BlocProvider<DownloadBloc>(
       create: (ctx) => DownloadBloc(),
       child: MaterialApp(
-        themeMode: ThemeMode.dark,
+        themeMode: ThemeMode.system,
         // DARK THEME
         darkTheme: ThemeData(
           brightness: Brightness.dark,
