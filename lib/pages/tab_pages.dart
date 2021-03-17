@@ -58,7 +58,7 @@ class _TabPagesState extends State<TabPages> {
             TabItem(icon: Icons.cloud_download),
           ],
           onTap: changeTab,
-          initialActiveIndex: index,
+          // initialActiveIndex: index,
         ),
         body: SafeArea(
           child: PageView(

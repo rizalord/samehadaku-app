@@ -46,7 +46,7 @@ dependencies:
   firebase_admob: ^0.9.3+2
   flutter_downloader: ^1.4.4
   device_info: ^0.4.2+4
-  convex_bottom_bar: ^2.2.1
+  convex_bottom_bar: ^2.7.1+2
 
 dev_dependencies:
   flutter_test:

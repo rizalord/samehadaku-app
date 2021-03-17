@@ -67,6 +67,7 @@ class _BrowserState extends State<Browser> {
   }
 
   void onUrlChange(String url, DownloadBloc bloc) {
+    print(url);
     if ((url.contains('.mkv') ||
             url.contains('.mp4') ||
             url.contains('.3gp')) &&
